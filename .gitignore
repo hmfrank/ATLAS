@@ -1,5 +1,7 @@
+# exclude everything
 /*
 
+# include only the stuff we need
 !.gitignore
 !CMakeLists.txt
 !Doxyfile
@@ -9,3 +11,6 @@
 !inc/*
 !src/
 !src/*
+
+# exclude test framework
+inc/catch.hpp

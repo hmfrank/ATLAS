@@ -21,7 +21,8 @@ XLDFLAGS = LDFLAGS
 
 TARGETS = [
 	# format: ('executable', [excluded files], (True for C++ False for C))
-	('atlas', ['src/test.cpp'], False)
+	('atlas', ['src/test.cpp'], False),
+	('test', ['src/main.c'], True)
 ]
 
 SRCDIR = 'src/'
