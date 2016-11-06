@@ -7,7 +7,7 @@
  * @file PreReader.h
  *
  * Contains the `struct PreReader` and prototypes of its methods.
- * @see PreReader
+ * @see struct PreReader
  */
 
 #define PREREADER_BUFFER_SIZE 1024
@@ -20,6 +20,9 @@
  *
  * Don't access this struct directly (except you know what you're doing). Use the methods (those that start with pr),
  * defined in PreReader.h, instead.
+ *
+ * @see prInit()
+ * @see prNext()
  */
 struct PreReader
 {
