@@ -1,4 +1,4 @@
-# Advanced Tool for Log Analytics and Statistics - A.T.L.A.S.
+# Advanced Tool for Log Analysis and Statistics - A.T.L.A.S.
 This is a tool for analyzing apache log files and generating statistics. There is no working release yet, so don't use
 this tool for now.
 
