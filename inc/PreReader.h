@@ -41,4 +41,14 @@ struct PreReader
 	char buffer[PREREADER_BUFFER_SIZE];
 };
 
+/**
+ * Initializes the PreReader.
+ * Sets the file, resets all the pointers and that kinda stuff. This method should be called before the PreReader is
+ * used. If either one of the parameters is `NULL` nothing happens.
+ *
+ * @param this Pointer to the PreReader that gets initialized. If `NULL` nothing happens.
+ * @param file File to let the PreReader read from. If `NULL` nothing happens.
+ */
+void prInit(struct PreReader *this, FILE *file);
+
 #endif //ATLAS_PREREADER_H
