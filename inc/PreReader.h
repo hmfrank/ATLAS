@@ -61,7 +61,7 @@ void prInit(struct PreReader *this, FILE *file);
  * If there is nothing new in the buffer, the next block is read from the underlying file. If the file is at its end,
  * `EOF` is returned.
  *
- * If `this` is `NULL`, `EOF` is returned
+ * If `this` is `NULL`, or `this` is in an invalid state `EOF` is returned.
  *
  * @param this Pointer to the PreReader to read from.
  * @return The next character in the buffer, or `EOF` if there are no new characters.
