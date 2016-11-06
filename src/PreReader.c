@@ -7,3 +7,15 @@
  *
  * @see PreReader.h
  */
+
+void prInit(struct PreReader *this, FILE *file)
+{
+	if (this == NULL)
+		return;
+	if (file == NULL)
+		return;
+
+	this->file = file;
+	this->read_pos = 0;
+	this->write_pos = 0;
+}
