@@ -70,7 +70,7 @@ struct LogEntry
 };
 
 /**
- * Frees all the string in a LogEntry.
+ * Frees all the strings in a LogEntry.
  *
  * @param this Pointer to the LogEntry which strings get freed.
  */
