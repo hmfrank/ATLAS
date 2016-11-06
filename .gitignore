@@ -2,6 +2,7 @@
 
 !.gitignore
 !CMakeLists.txt
+!Doxyfile
 !make.py
 !README.md
 !inc/
