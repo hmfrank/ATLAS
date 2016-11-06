@@ -18,8 +18,8 @@
  * it byte by byte, as the parser does). The parser however, which uses a PreReader, can then read
  * byte by byte from the memory buffer of the PreReader.
  *
- * Don't access this struct directly (except you know what you're doing). Use the methods, defined in PreReader.h,
- * instead.
+ * Don't access this struct directly (except you know what you're doing). Use the methods (those that start with pr),
+ * defined in PreReader.h, instead.
  */
 struct PreReader
 {
@@ -44,11 +44,26 @@ struct PreReader
 /**
  * Initializes the PreReader.
  * Sets the file, resets all the pointers and that kinda stuff. This method should be called before the PreReader is
- * used. If either one of the parameters is `NULL` nothing happens.
+ * used.
  *
- * @param this Pointer to the PreReader that gets initialized. If `NULL` nothing happens.
- * @param file File to let the PreReader read from. If `NULL` nothing happens.
+ * If either one of the parameters is `NULL` nothing happens.
+ *
+ * @param this Pointer to the PreReader that gets initialized.
+ * @param file File to let the PreReader read from.
  */
 void prInit(struct PreReader *this, FILE *file);
+
+/**
+ * Returns the next byte in the buffer.
+ * If there is nothing new in the buffer, the next block is read from the underlying file. If the file is at its end,
+ * `EOF` is returned.
+ *
+ * If `this` is `NULL`, `EOF` is returned
+ *
+ * @param this Pointer to the PreReader to read from.
+ * @return The next character in the buffer, or `EOF` if there are no new characters.
+ */
+int prNext(struct PreReader *this);
+
 
 #endif //ATLAS_PREREADER_H
