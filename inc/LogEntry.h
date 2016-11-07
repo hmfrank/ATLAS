@@ -11,6 +11,16 @@
  * @see struct LogEntry
  */
 
+#define HTTP_CONNECT 1
+#define HTTP_DELETE 2
+#define HTTP_GET 3
+#define HTTP_HEAD 4
+#define HTTP_OPTIONS 5
+#define HTTP_POST 6
+#define HTTP_PUT 7
+#define HTTP_TRACE 8
+#define HTTP_UNKNOWN 0
+
 /**
  * Represents a single entry in the server log.
  * Such an entry is usually the result of a client request and server response and is stored in a single line in the log
