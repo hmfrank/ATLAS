@@ -72,8 +72,8 @@ struct LogEntry
 /**
  * Frees all the strings in a LogEntry.
  *
- * @param this Pointer to the LogEntry which strings get freed.
+ * @param _this Pointer to the LogEntry which strings get freed.
  */
-void lgeFreeStrings(struct LogEntry *this);
+void lgeFreeStrings(struct LogEntry *_this);
 
 #endif //ATLAS_LOGENTRY_H

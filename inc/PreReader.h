@@ -51,22 +51,22 @@ struct PreReader
  *
  * If either one of the parameters is `NULL` nothing happens.
  *
- * @param this Pointer to the PreReader that gets initialized.
+ * @param _this Pointer to the PreReader that gets initialized.
  * @param file File to let the PreReader read from.
  */
-void prInit(struct PreReader *this, FILE *file);
+void prInit(struct PreReader *_this, FILE *file);
 
 /**
  * Returns the next byte in the buffer.
  * If there is nothing new in the buffer, the next block is read from the underlying file. If the file is at its end,
  * `EOF` is returned.
  *
- * If `this` is `NULL`, or `this` is in an invalid state `EOF` is returned.
+ * If `_this` is `NULL`, or `this` is in an invalid state `EOF` is returned.
  *
- * @param this Pointer to the PreReader to read from.
+ * @param _this Pointer to the PreReader to read from.
  * @return The next character in the buffer, or `EOF` if there are no new characters.
  */
-int prNext(struct PreReader *this);
+int prNext(struct PreReader *_this);
 
 
 #endif //ATLAS_PREREADER_H
