@@ -4,6 +4,8 @@
 #include "LogEntry.h"
 #include "PreReader.h"
 
+// TODO: add log format to docu
+
 /**
  * @file parse.h
  *
