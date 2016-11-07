@@ -5,6 +5,7 @@
 !.gitignore
 !CMakeLists.txt
 !Doxyfile
+!LICENSE
 !make.py
 !README.md
 !inc/
