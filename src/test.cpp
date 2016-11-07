@@ -3,8 +3,72 @@
 
 extern "C"
 {
+#include "../inc/Date.h"
+#include "../inc/LogEntry.h"
+#include "../inc/parse.h"
 #include "../inc/PreReader.h"
 };
+
+TEST_CASE("parse log entry", "[parseLogEntry]")
+{
+	// format: %t#%h#%u#%s#%I#%O#%U#%{Referer}i#%m
+	struct PreReader reader;
+	struct LogEntry entry;
+	FILE *file;
+
+	// normal log line
+	const char *s0 = "[07/Nov/2016:17:40:56 +0000]#1.2.3.4#-#200#1112#3757#/index.html#/#GET";
+	file = fmemopen((char*)s0, strlen(s0), "r");
+	prInit(&reader, file);
+
+	REQUIRE(parseLogEntry(&reader, NULL) == -1);
+	REQUIRE(parseLogEntry(NULL, &entry) == -1);
+	REQUIRE(parseLogEntry(NULL, NULL) == -1);
+
+	REQUIRE(parseLogEntry(&reader, &entry) == 0);
+	REQUIRE(entry.date.day == 7);
+	REQUIRE(entry.date.month == 11);
+	REQUIRE(entry.date.year == 2016);
+	REQUIRE(entry.http_method == HTTP_GET);
+	REQUIRE(entry.http_status == 200);
+	REQUIRE(entry.request_size == 1112);
+	REQUIRE(entry.response_size == 3757);
+	REQUIRE(strcmp(entry.remote_address, "1.2.3.4") == 0);
+	REQUIRE(strcmp(entry.username, "-") == 0);
+	REQUIRE(strcmp(entry.requested_file, "/index.html") == 0);
+	REQUIRE(strcmp(entry.referer, "/") == 0);
+
+	fclose(file);
+
+	// very strange but still valid log line
+	const char *s1 = "[255/mAR/65535:4:2:0 +1337]#fancy.url.com##65535#4294967295#0#/!@#$##";
+	file = fmemopen((char*)s1, strlen(s1), "r");
+	prInit(&reader, file);
+
+	REQUIRE(parseLogEntry(&reader, &entry) == 0);
+	REQUIRE(entry.date.day == 255);
+	REQUIRE(entry.date.month == 3);
+	REQUIRE(entry.date.year == 65535);
+	REQUIRE(entry.http_method == HTTP_UNKNOWN);
+	REQUIRE(entry.http_status == 65535);
+	REQUIRE(entry.request_size == 4294967295);
+	REQUIRE(entry.response_size == 0);
+	REQUIRE(strcmp(entry.remote_address, "fancy.url.com") == 0);
+	REQUIRE(entry.username == NULL);
+	REQUIRE(strcmp(entry.requested_file, "/!@#$") == 0);
+	REQUIRE(entry.referer == NULL);
+
+	fclose(file);
+
+	// invalid format (negative year)
+	const char *s2 = "[3/Oct/-1:4:2:0 +1337]#8.8.8.8#mike#200#257#2395#/index.html##GET";
+	file = fmemopen((char*)s2, strlen(s2), "r");
+	prInit(&reader, file);
+
+	REQUIRE(parseLogEntry(&reader, &entry) == 1);
+
+	fclose(file);
+}
 
 TEST_CASE("PreReader initialization", "[prInit]")
 {
@@ -22,8 +86,8 @@ TEST_CASE("PreReader initialization", "[prInit]")
 TEST_CASE("PreReader get next char", "[prNext]")
 {
 	struct PreReader pr;
-	char data[] = "abcdef\0\n\t\b!@#$";
-	FILE *file = fmemopen(data, 14, "r");
+	const char *data = "abcdef\0\n\t\b!@#$";
+	FILE *file = fmemopen((void*)data, 14, "r");
 
 	REQUIRE(file != NULL);
 	prInit(&pr, file);
