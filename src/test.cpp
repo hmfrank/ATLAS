@@ -9,6 +9,8 @@ extern "C"
 #include "../inc/PreReader.h"
 };
 
+// TODO: write test for static functions in parse.c somehow
+
 TEST_CASE("parse log entry", "[parseLogEntry]")
 {
 	// format: %t#%h#%u#%s#%I#%O#%U#%{Referer}i#%m
