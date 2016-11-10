@@ -62,8 +62,8 @@ struct LogEntry
 	char *remote_address;
 	/**
 	 * The username of the client.
-	 * Only applies if HTTPAuth was used in the request. If not, this field can be `NULL` or point to some dummy string
-	 * like `"-"` or `""`.
+	 * Only applies if HTTPAuth was used in the request. If not, this field point to some dummy string like `"-"` or
+	 * `""`.
 	 */
 	char *username;
 	/**
@@ -74,7 +74,7 @@ struct LogEntry
 	/**
 	 * The site the client comes from.
 	 * Most browser send this information with the request, by default. If no referer was sent with the request, this
-	 * field can be `NULL` or point to some dummy strin like `"-"` or `""`.
+	 * field can point to some dummy strin like `"-"` or `""`.
 	 */
 	char *referer;
 };
