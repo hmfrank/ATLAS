@@ -51,7 +51,7 @@ int parseLogEntry(FILE *stream, struct LogEntry *result)
 	char *cur = buffer;
 	char *end;
 	// general purpose variables
-	long int l;
+	long long int l;
 	size_t n;
 	// to temporarily hold the strings
 	char *remote_address;
@@ -73,8 +73,8 @@ int parseLogEntry(FILE *stream, struct LogEntry *result)
 		return 1;
 
 	// read day
-	l = strtol(cur, &cur, 10);
-	if (l < 0 || l > UCHAR_MAX)
+	l = strtoll(cur, &cur, 10);
+	if (l < 0 || l > (long long int)UCHAR_MAX)
 		return 1;
 	result->date.day = (unsigned char)l;
 
@@ -83,7 +83,7 @@ int parseLogEntry(FILE *stream, struct LogEntry *result)
 
 	// read month
 	l = strtol(cur, &cur, 10);
-	if (l < 0 || l > UCHAR_MAX)
+	if (l < 0 || l > (long long int)UCHAR_MAX)
 		return 1;
 	result->date.month = (unsigned char)l;
 
@@ -91,8 +91,8 @@ int parseLogEntry(FILE *stream, struct LogEntry *result)
 		return 1;
 
 	// read year
-	l = strtol(cur, &cur, 10);
-	if (l < 0 || l > USHRT_MAX)
+	l = strtoll(cur, &cur, 10);
+	if (l < 0 || l > (long long int)USHRT_MAX)
 		return 1;
 	result->date.year = (unsigned short)l;
 
@@ -121,8 +121,8 @@ int parseLogEntry(FILE *stream, struct LogEntry *result)
 	cur = end + 1;
 
 	// read http status
-	l = strtol(cur, &cur, 10);
-	if (l < 0 || l > USHRT_MAX)
+	l = strtoll(cur, &cur, 10);
+	if (l < 0 || l > (long long int)USHRT_MAX)
 		return 1;
 	result->http_status = (unsigned short)l;
 
@@ -130,8 +130,8 @@ int parseLogEntry(FILE *stream, struct LogEntry *result)
 		return 1;
 
 	// read request size
-	l = strtol(cur, &cur, 10);
-	if (l < 0 || l > UINT_MAX)
+	l = strtoll(cur, &cur, 10);
+	if (l < 0 || l > (long long int)UINT_MAX)
 		return 1;
 	result->request_size = (unsigned int)l;
 
@@ -139,8 +139,8 @@ int parseLogEntry(FILE *stream, struct LogEntry *result)
 		return 1;
 
 	// read response size
-	l = strtol(cur, &cur, 10);
-	if (l < 0 || l > UINT_MAX)
+	l = strtoll(cur, &cur, 10);
+	if (l < 0 || l > (long long int)UINT_MAX)
 		return 1;
 	result->response_size = (unsigned int)l;
 
