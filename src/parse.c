@@ -1,5 +1,7 @@
+#include <limits.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include "../inc/parse.h"
 
 /**
@@ -9,45 +11,189 @@
  */
 
 /**
- * Reads a string from `reader` and writes it into `buffer`.
- * This function reads `reader` until `EOF` or one of the chars in `terminator` is read (including the string
- * 0-terminator) or the buffer is full.
- * The first character, that breaks the above condition (and therefore stopps the reading process) is still read. So
- * further reading from `reader` continues after that character.
- * The read string is stored in `buffer` and a 0-terminator is added.
- *
- * **WARNING:** Passing `NULL` to `reader` or `buffer` is undefined behaviour.
- *
- * @param reader Points to the reader to read from.
- * @param terminators A string of all characters, that make the reading stop, or `NULL` if there aren't any.
- * @param bufsize The number of bytes this function is allowed to write into `buffer`. In other words, the maximum
- * number of characters that are read from `reader`.
- * @param buffer A buffer to write the read string to.
- * @return The number of characters read.
+ * The size of the line buffer used in `parseLogEntry()`.
  */
-static size_t parseString(struct PreReader *reader, const char *terminators, size_t bufsize, char *buffer)
+#define PARSER_LINEBUFFER_SIZE 1024
+
+/**
+ * Converts a string to a HTTP method constant.
+ * The constants defined in Logresult->h are used.
+ *
+ * @see Logresult->h
+ *
+ * @param str A string that represents a HTTP method. If `str` is `NULL`, `HTTP_UNKNOWN` is returned.
+ * @return the constant for the  HTTP method, `str` represents.
+ */
+static unsigned short toHttpMethod(char *str)
 {
-	if (bufsize == 0)
-		return 0;
+	if (str == NULL) return HTTP_UNKNOWN;
+	else if (!strcasecmp(str, "CONNECT")) return HTTP_CONNECT;
+	else if (!strcasecmp(str, "DELETE")) return HTTP_DELETE;
+	else if (!strcasecmp(str, "GET")) return HTTP_GET;
+	else if (!strcasecmp(str, "HEAD")) return HTTP_HEAD;
+	else if (!strcasecmp(str, "OPTIONS")) return HTTP_OPTIONS;
+	else if (!strcasecmp(str, "POST")) return HTTP_POST;
+	else if (!strcasecmp(str, "PUT")) return HTTP_PUT;
+	else if (!strcasecmp(str, "TRACE")) return HTTP_TRACE;
+	else return HTTP_UNKNOWN;
+}
 
-	int c;
-	size_t n_buffer;
+int parseLogEntry(FILE *stream, struct LogEntry *result)
+{
+	if (stream == NULL)
+		return -1;
+	if (result == NULL)
+		return -1;
 
-	for (n_buffer = 0; ; n_buffer++)
+	// line buffer
+	char buffer[PARSER_LINEBUFFER_SIZE];
+	// pointer to the current position in buffer
+	char *cur = buffer;
+	char *end;
+	// general purpose variables
+	long int l;
+	size_t n;
+	// to temporarily hold the strings
+	char *remote_address;
+	char *username;
+	char *requested_file;
+	char *referer;
+	size_t n_remote_address;
+	size_t n_username;
+	size_t n_requested_file;
+	size_t n_referer;
+
+	// read line into buffer
+	if (fgets(buffer, PARSER_LINEBUFFER_SIZE, stream) == NULL)
+		return 1;
+	if (strchr(buffer, '\n') == NULL)
+		return 1;
+
+	if (*(cur++) != '[')
+		return 1;
+
+	// read day
+	l = strtol(cur, &cur, 10);
+	if (l < 0 || l > UCHAR_MAX)
+		return 1;
+	result->date.day = (unsigned char)l;
+
+	if (*(cur++) != '/')
+		return 1;
+
+	// read month
+	l = strtol(cur, &cur, 10);
+	if (l < 0 || l > UCHAR_MAX)
+		return 1;
+	result->date.month = (unsigned char)l;
+
+	if (*(cur++) != '/')
+		return 1;
+
+	// read year
+	l = strtol(cur, &cur, 10);
+	if (l < 0 || l > USHRT_MAX)
+		return 1;
+	result->date.year = (unsigned short)l;
+
+	while (*(cur++) != ']')
+	{ }
+
+	if (*(cur++) != '#')
+		return 1;
+
+	// read remote address
+	end = strchr(cur, '#');
+	if (end == NULL)
+		return 1;
+	*end = '\0';
+	remote_address = cur;
+	n_remote_address = end - cur;
+	cur = end + 1;
+
+	// read username
+	end = strchr(cur, '#');
+	if (end == NULL)
+		return 1;
+	*end = '\0';
+	username = cur;
+	n_username = end - cur;
+	cur = end + 1;
+
+	// read http status
+	l = strtol(cur, &cur, 10);
+	if (l < 0 || l > USHRT_MAX)
+		return 1;
+	result->http_status = (unsigned short)l;
+
+	if (*(cur++) != '#')
+		return 1;
+
+	// read request size
+	l = strtol(cur, &cur, 10);
+	if (l < 0 || l > UINT_MAX)
+		return 1;
+	result->request_size = (unsigned int)l;
+
+	if (*(cur++) != '#')
+		return 1;
+
+	// read response size
+	l = strtol(cur, &cur, 10);
+	if (l < 0 || l > UINT_MAX)
+		return 1;
+	result->response_size = (unsigned int)l;
+
+	if (*(cur++) != '#')
+		return 1;
+
+	// read requested file
+	end = strchr(cur, '#');
+	if (end == NULL)
+		return 1;
+	*end = '\0';
+	requested_file = cur;
+	n_requested_file = end - cur;
+	cur = end + 1;
+
+	// read referer
+	end = strchr(cur, '#');
+	if (end == NULL)
+		return 1;
+	*end = '\0';
+	referer = cur;
+	n_referer = end - cur;
+	cur = end + 1;
+
+	n = strlen(cur);
+	if (cur[n - 1] == '\n')
+		cur[n - 1] = '\0';
+
+	// read HTTP method
+	result->http_method = toHttpMethod(cur);
+
+	// alloc memory for the strings
+	result->remote_address = malloc(n_remote_address + 1);
+	result->username = malloc(n_username + 1);
+	result->requested_file = malloc(n_requested_file + 1);
+	result->referer = malloc(n_referer + 1);
+
+	// free memory if at least one malloc failed
+	if (result->remote_address == NULL || result->username == NULL || result->requested_file == NULL || result->referer == NULL)
 	{
-		c = prNext(reader);
+		if (result->remote_address != NULL) free(result->remote_address);
+		if (result->username != NULL) free(result->username);
+		if (result->requested_file != NULL) free(result->requested_file);
+		if (result->referer != NULL) free(result->referer);
 
-		if (n_buffer >= bufsize - 1)
-			break;
-		if (c == EOF)
-			break;
-		if ((terminators != NULL) && strchr(terminators, (char)c) != NULL)
-			break;
-
-		buffer[n_buffer] = (char)c;
+		return 2;
 	}
 
-	buffer[n_buffer] = '\0';
+	// copy strings into heap
+	memcpy(result->remote_address, remote_address, n_remote_address + 1);
+	memcpy(result->username, username, n_username + 1);
+	memcpy(result->requested_file, requested_file, n_requested_file + 1);
+	memcpy(result->referer, referer, n_referer + 1);
 
-	return n_buffer;
+	return 0;
 }

@@ -1,8 +1,8 @@
 #ifndef ATLAS_PARSE_H
 #define ATLAS_PARSE_H
 
+#include <stdio.h>
 #include "LogEntry.h"
-#include "PreReader.h"
 
 // TODO: add log format to docu
 
@@ -14,14 +14,17 @@
 
 /**
  * Parses a line of a log file to create a LogEntry.
+ * If the function succeeds (returns 0), the strings in `*result` are allocated on the heap using `malloc`, so make sure
+ * you free them, when you don't need them anymore.
  *
- * @param reader The reader to read from (must be at a line start in the log file).
+ * @param stream The file stream to read from.
  * @param result A pointer to where the result is gonna be stored.
  * @return Status code with the following meaning:<br>
  * 0 = success<br>
  * -1 = invalid parameter (e.g. `NULL`)<br>
  * 1 = parsing error (wrong format or `EOF` reached)
+ * 2 = malloc error
  */
-int parseLogEntry(struct PreReader *reader, struct LogEntry *result);
+int parseLogEntry(FILE *stream, struct LogEntry *result);
 
 #endif //ATLAS_PARSE_H
