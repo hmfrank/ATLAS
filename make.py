@@ -7,6 +7,7 @@
 # Run this script every time you wanna compile and run your C/C++ code,
 # and it will: generate a makefile, run make and run your program.
 # Adjust the constants below for your needs.
+from multiprocessing import cpu_count
 import os
 
 # c compiler flags
@@ -41,7 +42,7 @@ def get_extension(filename):
 
 
 def make_run(exe):
-	if os.system('make ' + exe) == 0:
+	if os.system('make -j {} {}'.format(cpu_count(), exe)) == 0:
 		r = os.system('./' + exe)
 		print('{} returned exit code {}.'.format(exe, r))
 
