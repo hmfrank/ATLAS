@@ -5,11 +5,26 @@ extern "C"
 {
 #include "../inc/Date.h"
 #include "../inc/LogEntry.h"
+#include "../inc/macros.h"
 #include "../inc/parse.h"
 #include "../inc/PreReader.h"
 };
 
-// TODO: write test for static functions in parse.c somehow
+extern unsigned short toHttpMethod(const char *str);
+TEST_CASE("to HTTP method", "[src/parse.c/toHttpMethod]")
+{
+	REQUIRE(toHttpMethod(NULL) == HTTP_UNKNOWN);
+	REQUIRE(toHttpMethod("CONNECT") == HTTP_CONNECT);
+	REQUIRE(toHttpMethod("delete") == HTTP_DELETE);
+	REQUIRE(toHttpMethod("gET") == HTTP_GET);
+	REQUIRE(toHttpMethod("HeAd") == HTTP_HEAD);
+	REQUIRE(toHttpMethod("optIons") == HTTP_OPTIONS);
+	REQUIRE(toHttpMethod("POST") == HTTP_POST);
+	REQUIRE(toHttpMethod("put") == HTTP_PUT);
+	REQUIRE(toHttpMethod("tRaCe") == HTTP_TRACE);
+	REQUIRE(toHttpMethod("GETS") == HTTP_UNKNOWN);
+	REQUIRE(toHttpMethod("") == HTTP_UNKNOWN);
+}
 
 TEST_CASE("parse log entry", "[src/parse.c/parseLogEntry]")
 {

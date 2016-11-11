@@ -25,7 +25,7 @@
  * @param str A string that represents a HTTP method. If `str` is `NULL`, `HTTP_UNKNOWN` is returned.
  * @return the constant for the  HTTP method, `str` represents.
  */
-static unsigned short toHttpMethod(char *str)
+static unsigned short toHttpMethod(const char *str)
 {
 	if (str == NULL) return HTTP_UNKNOWN;
 	else if (!strcasecmp(str, "CONNECT")) return HTTP_CONNECT;
