@@ -11,7 +11,7 @@ extern "C"
 
 // TODO: write test for static functions in parse.c somehow
 
-TEST_CASE("parse log entry", "[parseLogEntry]")
+TEST_CASE("parse log entry", "[src/parse.c/parseLogEntry]")
 {
 	// format: %t#%h#%u#%s#%I#%O#%U#%{Referer}i#%m
 	struct LogEntry entry;
@@ -68,7 +68,7 @@ TEST_CASE("parse log entry", "[parseLogEntry]")
 	fclose(file);
 }
 
-TEST_CASE("PreReader initialization", "[prInit]")
+TEST_CASE("PreReader initialization", "[src/PreReader.c/prInit]")
 {
 	// some random file
 	FILE *file = stdin;
@@ -81,7 +81,7 @@ TEST_CASE("PreReader initialization", "[prInit]")
 	REQUIRE(pr.write_pos == 0);
 }
 
-TEST_CASE("PreReader get next char", "[prNext]")
+TEST_CASE("PreReader get next char", "[src/PreReader.c/prNext]")
 {
 	struct PreReader pr;
 	const char *data = "abcdef\0\n\t\b!@#$";
