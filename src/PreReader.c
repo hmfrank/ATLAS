@@ -1,3 +1,4 @@
+#include "../inc/macros.h"
 #include "../inc/PreReader.h"
 
 /**

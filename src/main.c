@@ -1,3 +1,5 @@
+#include "../inc/macros.h"
+
 /**
  * @file main.c
  *

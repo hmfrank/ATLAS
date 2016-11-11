@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "../inc/LogEntry.h"
+#include "../inc/macros.h"
 
 /**
  * @file LogEntry.c
