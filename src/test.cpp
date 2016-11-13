@@ -28,6 +28,7 @@ TEST_CASE("to HTTP method", "[src/parse.c/toHttpMethod]")
 }
 */
 
+// TODO: test too long input
 TEST_CASE("parse log entry", "[src/parse.c/parseLogEntry]")
 {
 	// format: %t#%h#%u#%s#%I#%O#%U#%{Referer}i#%m
@@ -58,7 +59,7 @@ TEST_CASE("parse log entry", "[src/parse.c/parseLogEntry]")
 	fclose(file);
 
 	// very strange but still valid log line
-	const char *s1 = "[255/mAR/65535:4:2:0 +1337]#fancy.url.com##65535#4294967295#0#/!@#$##";
+	const char *s1 = "[255/mAR/65535:4:2:0 +1337]#fancy.url.com##65535#4294967295#0#/!@$%##";
 	file = fmemopen((char*)s1, strlen(s1), "r");
 
 	REQUIRE(parseLogEntry(file, &entry) == 0);
@@ -71,7 +72,7 @@ TEST_CASE("parse log entry", "[src/parse.c/parseLogEntry]")
 	REQUIRE(entry.response_size == 0);
 	REQUIRE(strcmp(entry.remote_address, "fancy.url.com") == 0);
 	REQUIRE(strcmp(entry.username, "") == 0);
-	REQUIRE(strcmp(entry.requested_file, "/!@#$") == 0);
+	REQUIRE(strcmp(entry.requested_file, "/!@$%") == 0);
 	REQUIRE(strcmp(entry.referer, "") == 0);
 
 	fclose(file);

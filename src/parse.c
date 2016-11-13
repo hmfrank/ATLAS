@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>
@@ -39,6 +40,30 @@ static unsigned short toHttpMethod(const char *str)
 	else return HTTP_UNKNOWN;
 }
 
+static unsigned char toMonth(char *str)
+{
+	if (str == NULL)
+		return 0;
+
+	for (int i = 0; i < 3; i++)
+		str[i] = (char)tolower(str[i]);
+
+	if (!strcmp(str, "jan")) return 1;
+	else if (!strcmp(str, "feb")) return 2;
+	else if (!strcmp(str, "mar")) return 3;
+	else if (!strcmp(str, "apr")) return 4;
+	else if (!strcmp(str, "may")) return 5;
+	else if (!strcmp(str, "jun")) return 6;
+	else if (!strcmp(str, "jul")) return 7;
+	else if (!strcmp(str, "aug")) return 8;
+	else if (!strcmp(str, "sep")) return 9;
+	else if (!strcmp(str, "oct")) return 10;
+	else if (!strcmp(str, "nov")) return 11;
+	else if (!strcmp(str, "dec")) return 12;
+	else return 0;
+}
+
+// TODO: nochma durchdenken, was passiert, wenn der string kuerzer is, als gedacht
 int parseLogEntry(FILE *stream, struct LogEntry *result)
 {
 	if (stream == NULL)
@@ -67,7 +92,7 @@ int parseLogEntry(FILE *stream, struct LogEntry *result)
 	// read line into buffer
 	if (fgets(buffer, PARSER_LINEBUFFER_SIZE, stream) == NULL)
 		return 1;
-	if (strchr(buffer, '\n') == NULL)
+	if (strchr(buffer, '\n') == NULL && strlen(buffer) >= PARSER_LINEBUFFER_SIZE - 1)
 		return 1;
 
 	if (*(cur++) != '[')
@@ -83,13 +108,12 @@ int parseLogEntry(FILE *stream, struct LogEntry *result)
 		return 1;
 
 	// read month
-	l = strtol(cur, &cur, 10);
-	if (l < 0 || l > (long long int)UCHAR_MAX)
+	end = strchr(cur, '/');
+	if (end == NULL)
 		return 1;
-	result->date.month = (unsigned char)l;
-
-	if (*(cur++) != '/')
-		return 1;
+	*end = '\0';
+	result->date.month = toMonth(cur);
+	cur = end + 1;
 
 	// read year
 	l = strtoll(cur, &cur, 10);
