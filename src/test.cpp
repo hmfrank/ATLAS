@@ -1,6 +1,6 @@
 #define CATCH_CONFIG_MAIN
 
-#include <limits.h>
+#include <climits>
 #include "../inc/catch.hpp"
 
 extern "C"
@@ -12,6 +12,7 @@ extern "C"
 };
 
 // TODO: test dtToString()
+// TODO: more tests for parseLogEntry()
 
 /*
 extern unsigned short toHttpMethod(const char *str);
@@ -37,6 +38,8 @@ TEST_CASE("architecture tests", "[architecture]")
 	REQUIRE(UCHAR_MAX >= 31);
 	// for year in struct Date
 	REQUIRE(USHRT_MAX >= 9999);
+	// for implementation of parseLogEntry
+	REQUIRE(LLONG_MAX >= 9999);
 }
 
 // TODO: test too long input
