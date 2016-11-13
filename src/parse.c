@@ -63,6 +63,7 @@ static unsigned char toMonth(char *str)
 	else return 0;
 }
 
+// TODO: die datums-zahlen nicht groesser als y=9999, m=99, d=99 zulassen, oder vlt sogar m=12, d=31
 // TODO: nochma durchdenken, was passiert, wenn der string kuerzer is, als gedacht
 int parseLogEntry(FILE *stream, struct LogEntry *result)
 {
