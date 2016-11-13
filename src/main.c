@@ -1,4 +1,5 @@
 #include "../inc/macros.h"
+#include "../inc/parse.h"
 
 /**
  * @file main.c
@@ -18,5 +19,26 @@
  */
 int main(int argc, char **argv)
 {
+	struct LogEntry e;
+	int n = 0;
+
+	while (1)
+	{
+		if (parseLogEntry(stdin, &e) != 0)
+		{
+			if (feof(stdin))
+				break;
+
+			fprintf(stderr, "invalid format in line #%d\n", n);
+			return 1;
+		}
+		else
+		{
+			n++;
+		}
+	}
+
+	printf("%d log entries read\n", n);
+
 	return 0;
 }

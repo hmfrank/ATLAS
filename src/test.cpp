@@ -1,4 +1,6 @@
 #define CATCH_CONFIG_MAIN
+
+#include <climits>
 #include "../inc/catch.hpp"
 
 extern "C"
@@ -8,6 +10,9 @@ extern "C"
 #include "../inc/macros.h"
 #include "../inc/parse.h"
 };
+
+// TODO: test dtToString()
+// TODO: more tests for parseLogEntry()
 
 /*
 extern unsigned short toHttpMethod(const char *str);
@@ -26,6 +31,16 @@ TEST_CASE("to HTTP method", "[src/parse.c/toHttpMethod]")
 	REQUIRE(toHttpMethod("") == HTTP_UNKNOWN);
 }
 */
+
+TEST_CASE("architecture tests", "[architecture]")
+{
+	// for day in struct Date
+	REQUIRE(UCHAR_MAX >= 31);
+	// for year in struct Date
+	REQUIRE(USHRT_MAX >= 9999);
+	// for implementation of parseLogEntry
+	REQUIRE(LLONG_MAX >= 9999);
+}
 
 // TODO: test too long input
 TEST_CASE("parse log entry", "[src/parse.c/parseLogEntry]")
@@ -59,15 +74,15 @@ TEST_CASE("parse log entry", "[src/parse.c/parseLogEntry]")
 	fclose(file);
 
 	// very strange but still valid log line
-	const char *s1 = "[255/mAR/65535:4:2:0 +1337]#fancy.url.com##65535#4294967295#0#/!@$%##";
+	const char *s1 = "[12/mAR/9999:4:2:0 +1337]#fancy.url.com##999#4294967295#0#/!@$%##";
 	file = fmemopen((char*)s1, strlen(s1), "r");
 
 	REQUIRE(parseLogEntry(file, &entry) == 0);
-	REQUIRE(entry.date.day == 255);
+	REQUIRE(entry.date.day == 12);
 	REQUIRE(entry.date.month == 3);
-	REQUIRE(entry.date.year == 65535);
+	REQUIRE(entry.date.year == 9999);
 	REQUIRE(entry.http_method == HTTP_UNKNOWN);
-	REQUIRE(entry.http_status == 65535);
+	REQUIRE(entry.http_status == 999);
 	REQUIRE(entry.request_size == 4294967295);
 	REQUIRE(entry.response_size == 0);
 	REQUIRE(strcmp(entry.remote_address, "fancy.url.com") == 0);
@@ -78,8 +93,8 @@ TEST_CASE("parse log entry", "[src/parse.c/parseLogEntry]")
 	lgeFreeStrings(&entry);
 	fclose(file);
 
-	// invalid format (negative year)
-	const char *s2 = "[3/Oct/-1:4:2:0 +1337]#8.8.8.8#mike#200#257#2395#/index.html##GET";
+	// invalid format (year >= 10000)
+	const char *s2 = "[3/Oct/10000:4:2:0 +1337]#8.8.8.8#mike#200#257#2395#/index.html##GET";
 	file = fmemopen((char*)s2, strlen(s2), "r");
 
 	REQUIRE(parseLogEntry(file, &entry) == 1);

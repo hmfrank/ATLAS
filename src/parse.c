@@ -40,6 +40,12 @@ static unsigned short toHttpMethod(const char *str)
 	else return HTTP_UNKNOWN;
 }
 
+/**
+ * Converts a string to a month number.
+ *
+ * @param str the first 3 characters of the month name (not case sensitive)
+ * @return the month number (1 - 12) or 0 on failure.
+ */
 static unsigned char toMonth(char *str)
 {
 	if (str == NULL)
@@ -63,7 +69,6 @@ static unsigned char toMonth(char *str)
 	else return 0;
 }
 
-// TODO: nochma durchdenken, was passiert, wenn der string kuerzer is, als gedacht
 int parseLogEntry(FILE *stream, struct LogEntry *result)
 {
 	if (stream == NULL)
@@ -78,7 +83,6 @@ int parseLogEntry(FILE *stream, struct LogEntry *result)
 	char *end;
 	// general purpose variables
 	long long int l;
-	size_t n;
 	// to temporarily hold the strings
 	char *remote_address;
 	char *username;
@@ -92,15 +96,21 @@ int parseLogEntry(FILE *stream, struct LogEntry *result)
 	// read line into buffer
 	if (fgets(buffer, PARSER_LINEBUFFER_SIZE, stream) == NULL)
 		return 1;
-	if (strchr(buffer, '\n') == NULL && strlen(buffer) >= PARSER_LINEBUFFER_SIZE - 1)
-		return 1;
 
+	// check if buffer was long enough
+	end = strchr(buffer, '\n');
+	if (end == NULL && strlen(buffer) >= PARSER_LINEBUFFER_SIZE - 1)
+		return 1;
+	else if (end != NULL)
+		*end = '\0';
+
+	// start parsing
 	if (*(cur++) != '[')
 		return 1;
 
 	// read day
-	l = strtoll(cur, &cur, 10);
-	if (l < 0 || l > (long long int)UCHAR_MAX)
+	l = strtol(cur, &cur, 10);
+	if (l < 0 || l > 31)
 		return 1;
 	result->date.day = (unsigned char)l;
 
@@ -112,18 +122,24 @@ int parseLogEntry(FILE *stream, struct LogEntry *result)
 	if (end == NULL)
 		return 1;
 	*end = '\0';
-	result->date.month = toMonth(cur);
+	l = (long long int)toMonth(cur);
+	if (l < 1 || l > 12)
+		return 1;
+	result->date.month = (unsigned char)l;
 	cur = end + 1;
 
 	// read year
-	l = strtoll(cur, &cur, 10);
-	if (l < 0 || l > (long long int)USHRT_MAX)
+	l = strtol(cur, &cur, 10);
+	if (l < 0 || l > 9999)
 		return 1;
 	result->date.year = (unsigned short)l;
 
-	while (*(cur++) != ']')
+	// ignore time
+	for (; *cur != ']' && *cur != '\0'; cur++)
 	{ }
 
+	if (*(cur++) != ']')
+		return 1;
 	if (*(cur++) != '#')
 		return 1;
 
@@ -146,8 +162,8 @@ int parseLogEntry(FILE *stream, struct LogEntry *result)
 	cur = end + 1;
 
 	// read http status
-	l = strtoll(cur, &cur, 10);
-	if (l < 0 || l > (long long int)USHRT_MAX)
+	l = strtol(cur, &cur, 10);
+	if (l < 0 || l > 999)
 		return 1;
 	result->http_status = (unsigned short)l;
 
@@ -189,10 +205,6 @@ int parseLogEntry(FILE *stream, struct LogEntry *result)
 	referer = cur;
 	n_referer = end - cur;
 	cur = end + 1;
-
-	n = strlen(cur);
-	if (cur[n - 1] == '\n')
-		cur[n - 1] = '\0';
 
 	// read HTTP method
 	result->http_method = toHttpMethod(cur);
