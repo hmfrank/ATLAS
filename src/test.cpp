@@ -56,6 +56,7 @@ TEST_CASE("parse log entry", "[src/parse.c/parseLogEntry]")
 	REQUIRE(strcmp(entry.requested_file, "/index.html") == 0);
 	REQUIRE(strcmp(entry.referer, "/") == 0);
 
+	lgeFreeStrings(&entry);
 	fclose(file);
 
 	// very strange but still valid log line
@@ -75,6 +76,7 @@ TEST_CASE("parse log entry", "[src/parse.c/parseLogEntry]")
 	REQUIRE(strcmp(entry.requested_file, "/!@$%") == 0);
 	REQUIRE(strcmp(entry.referer, "") == 0);
 
+	lgeFreeStrings(&entry);
 	fclose(file);
 
 	// invalid format (negative year)
