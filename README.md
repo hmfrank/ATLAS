@@ -15,4 +15,4 @@ Works the same way as building the main project, except that you run `./make.py 
 [here](https://raw.githubusercontent.com/philsquared/Catch/master/single_include/catch.hpp "catch.cpp").  
 [More information on the Catch test framework here.](https://github.com/philsquared/Catch "catch.cpp")
 
-_Version_ 0.0.0.1
+_Version_ 0.0.0.2
