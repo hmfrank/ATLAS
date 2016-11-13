@@ -10,6 +10,7 @@ extern "C"
 #include "../inc/PreReader.h"
 };
 
+/*
 extern unsigned short toHttpMethod(const char *str);
 TEST_CASE("to HTTP method", "[src/parse.c/toHttpMethod]")
 {
@@ -25,6 +26,7 @@ TEST_CASE("to HTTP method", "[src/parse.c/toHttpMethod]")
 	REQUIRE(toHttpMethod("GETS") == HTTP_UNKNOWN);
 	REQUIRE(toHttpMethod("") == HTTP_UNKNOWN);
 }
+*/
 
 TEST_CASE("parse log entry", "[src/parse.c/parseLogEntry]")
 {
