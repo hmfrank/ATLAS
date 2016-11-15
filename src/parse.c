@@ -217,10 +217,10 @@ int parseLogEntry(FILE *stream, struct LogEntry *result)
 	// free memory if at least one malloc failed
 	if (result->remote_address == NULL || result->username == NULL || result->requested_file == NULL || result->referer == NULL)
 	{
-		if (result->remote_address != NULL) free(result->remote_address);
-		if (result->username != NULL) free(result->username);
-		if (result->requested_file != NULL) free(result->requested_file);
-		if (result->referer != NULL) free(result->referer);
+		free(result->remote_address);
+		free(result->username);
+		free(result->requested_file);
+		free(result->referer);
 
 		return 2;
 	}
