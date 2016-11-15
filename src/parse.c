@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
-#include "../inc/macros.h"
 #include "../inc/parse.h"
 
 /**

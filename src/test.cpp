@@ -7,7 +7,6 @@ extern "C"
 {
 #include "../inc/Date.h"
 #include "../inc/LogEntry.h"
-#include "../inc/macros.h"
 #include "../inc/parse.h"
 };
 
