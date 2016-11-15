@@ -2,6 +2,7 @@
 #define ATLAS_LOGENTRY_H
 
 #include "Date.h"
+#include "../inc/DayCounter.h"
 
 /**
  * @file LogEntry.h

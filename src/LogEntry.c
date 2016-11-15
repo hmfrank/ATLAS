@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include "../inc/LogEntry.h"
-#include "../inc/DayCounter.h"
 
 /**
  * @file LogEntry.c
