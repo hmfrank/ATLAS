@@ -11,6 +11,7 @@ extern "C"
 };
 
 // TODO: test dtToString()
+// TODO: test dtToNewString()
 // TODO: more tests for parseLogEntry()
 
 /*
@@ -39,6 +40,9 @@ TEST_CASE("architecture tests", "[architecture]")
 	REQUIRE(USHRT_MAX >= 9999);
 	// for implementation of parseLogEntry
 	REQUIRE(LLONG_MAX >= 9999);
+	// for implementation of dtToNewString
+	REQUIRE(USHRT_MAX <= 99999);
+	REQUIRE(UCHAR_MAX <= 99999);
 }
 
 // TODO: test too long input

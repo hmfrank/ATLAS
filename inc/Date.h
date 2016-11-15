@@ -33,4 +33,11 @@ struct Date
  */
 int dtToString(struct Date *_this, char *buffer);
 
+/**
+ * Same as dtToString but allocated a new string.
+ * @param _this The date that gets converted to a string.
+ * @return Pointer to the newly allocated string, or `NULL` on failure.
+ */
+char *dtToNewString(struct Date *_this);
+
 #endif //ATLAS_DATE_H
