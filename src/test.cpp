@@ -13,7 +13,10 @@ extern "C"
 // TODO: test dtToString()
 // TODO: test dtToNewString()
 // TODO: test lgeAddToDaycounter()
+
 // TODO: more tests for parseLogEntry()
+
+// TODO: run valigrind memory leak tests
 
 /*
 extern unsigned short toHttpMethod(const char *str);

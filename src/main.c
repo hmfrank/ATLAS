@@ -85,7 +85,22 @@ int main(int argc, char **argv)
 		}
 	}
 
+	// free memory
+	for (size_t i = 0; i < n_keys; i++)
+	{
+		ENTRY entry = { .key = keys[i] };
+		ENTRY *ptr = hsearch(entry, FIND);
+
+		if (ptr != NULL)
+			free(ptr->data);
+	}
+
 	hdestroy();
+
+	for (size_t i = 0; i < n_keys; i++)
+	{
+		free(keys[i]);
+	}
 
 	return 0;
 }
