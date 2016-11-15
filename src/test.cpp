@@ -12,6 +12,7 @@ extern "C"
 
 // TODO: test dtToString()
 // TODO: test dtToNewString()
+// TODO: test lgeAddToDaycounter()
 // TODO: more tests for parseLogEntry()
 
 /*
