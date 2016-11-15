@@ -2,6 +2,13 @@
 #define ATLAS_DAYINFO_H
 
 /**
+ * @file DayCounter.h
+ *
+ * Contains the definition of `struct DayCounter`.
+ */
+
+// TODO: keep track of which user was already added (bloom filter!)
+/**
  * Stores log information about a single day.
  */
 struct DayCounter
