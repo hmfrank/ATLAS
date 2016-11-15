@@ -4,7 +4,7 @@
 /**
  * Stores log information about a single day.
  */
-struct DayInfo
+struct DayCounter
 {
 	/**
 	 * Number of requests.
