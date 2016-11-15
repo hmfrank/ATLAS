@@ -1,4 +1,6 @@
-
+#include <search.h>
+#include <stdlib.h>
+#include "../inc/DayCounter.h"
 #include "../inc/parse.h"
 
 /**
@@ -10,6 +12,19 @@
  */
 
 /**
+ * The maximum number of days the program can store information about.
+ */
+size_t MAXN_DAYS = 42;
+
+/**
+ * Prints an error message to `stderr` and exits the program.
+ *
+ * @param message The message to print on `strerr`.
+ * @param error The error code that is returned to the OS.
+ */
+void errexit(const char *message, int error);
+
+/**
  * The main entry point of the program.
  * This is the first function that is called, when the program starts.
  *
@@ -19,26 +34,64 @@
  */
 int main(int argc, char **argv)
 {
-	struct LogEntry e;
-	int n = 0;
+	char *keys[MAXN_DAYS];
+	size_t n_keys = 0;
+
+	hcreate(MAXN_DAYS * 2);
 
 	while (1)
 	{
-		if (parseLogEntry(stdin, &e) != 0)
+		struct LogEntry e;
+
+		if (parseLogEntry(stdin, &e))
 		{
 			if (feof(stdin))
 				break;
 
-			fprintf(stderr, "invalid format in line #%d\n", n);
-			return 1;
+			fprintf(stderr, "invalid entry!\n");
 		}
 		else
 		{
-			n++;
+			ENTRY *ptr;
+			ENTRY entry;
+
+			entry.key = dtToNewString(&e.date);
+			entry.data = NULL;
+
+			if (entry.key == NULL)
+				errexit("Out of memory!\n", 1);
+
+			ptr = hsearch(entry, ENTER);
+
+			// if entry was not in the hash table
+			if (ptr->data == NULL)
+			{
+				struct DayCounter *counter;
+
+				// add key
+				keys[n_keys] = entry.key;
+				n_keys++;
+
+				// create new empty counter
+				counter = calloc(1, sizeof(struct DayCounter));
+				if (counter == NULL)
+					errexit("Out of memory!\n", 1);
+
+				ptr->data = counter;
+			}
+
+			// add log entry to counter
+			lgeAddToDayCounter(&e, ptr->data);
 		}
 	}
 
-	printf("%d log entries read\n", n);
+	hdestroy();
 
 	return 0;
+}
+
+void errexit(const char *message, int error)
+{
+	fputs(message, stderr);
+	exit(error);
 }
