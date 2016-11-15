@@ -6,7 +6,7 @@
 /**
  * @file Date.h
  *
- * Contains the definition of `struct Date`.
+ * Contains the definition of `struct Date`, as well as prototypes of its methods.
  *
  * @see struct Date
  */
