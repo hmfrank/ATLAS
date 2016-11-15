@@ -1,5 +1,6 @@
 #include <search.h>
 #include <stdlib.h>
+#include <string.h>
 #include "../inc/DayCounter.h"
 #include "../inc/parse.h"
 
@@ -24,6 +25,8 @@ size_t MAXN_DAYS = 42;
  */
 void errexit(const char *message, int error);
 
+
+// TODO: clean up main function
 /**
  * The main entry point of the program.
  * This is the first function that is called, when the program starts.
@@ -39,6 +42,7 @@ int main(int argc, char **argv)
 
 	hcreate(MAXN_DAYS * 2);
 
+	// read log entries from stream, until EOF
 	while (1)
 	{
 		struct LogEntry e;
@@ -85,14 +89,28 @@ int main(int argc, char **argv)
 		}
 	}
 
-	// free memory
+	// sort keys
+	int _strcmp(const void * a, const void *b)
+	{
+		return strcmp(*(const char **)a, *(const char **)b);
+	}
+	qsort(keys, n_keys, sizeof(char*), _strcmp);
+
+	// print data and free memory
+	printf("%10s %10s %10s %10s\n", "DATE", "REQUESTS", "IN", "OUT");
 	for (size_t i = 0; i < n_keys; i++)
 	{
 		ENTRY entry = { .key = keys[i] };
 		ENTRY *ptr = hsearch(entry, FIND);
 
 		if (ptr != NULL)
+		{
+			struct DayCounter *counter = (struct DayCounter*)ptr->data;
+
+			printf("%10s %10d %10llu %10llu\n", ptr->key, counter->n_requests, counter->n_bytes_in, counter->n_bytes_out);
+
 			free(ptr->data);
+		}
 	}
 
 	hdestroy();
