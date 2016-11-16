@@ -24,7 +24,7 @@ CXX = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra -Werror
 LXXFLAGS =
 
-.PHONY: all test clean
+.PHONY: all test clean destroy
 
 all: $(EXE)
 
@@ -32,6 +32,9 @@ test: $(TEST)
 
 clean:
 	rm -rf $(EXE) $(TEST) $(OBJDIR)
+
+destroy: clean
+	rm -rf $(LIBDIR)
 
 # link atlas
 $(EXE): $(OBJ)
