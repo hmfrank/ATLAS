@@ -8,6 +8,7 @@
 !LICENSE
 !make.py
 !README.md
+!wc.sh
 !inc/
 !inc/*
 !src/
@@ -15,3 +16,4 @@
 
 # exclude test framework
 inc/catch.hpp
+
