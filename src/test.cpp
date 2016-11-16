@@ -1,7 +1,7 @@
 #define CATCH_CONFIG_MAIN
 
 #include <climits>
-#include "../inc/catch.hpp"
+#include "../lib/catch.hpp"
 
 extern "C"
 {

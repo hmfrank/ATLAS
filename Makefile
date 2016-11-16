@@ -5,6 +5,7 @@ TEST = utest
 
 SRCDIR = src/
 OBJDIR = bin/
+LIBDIR = lib/
 
 SRC = $(wildcard $(SRCDIR)*.c)
 OBJ = $(SRC:$(SRCDIR)%.c=$(OBJDIR)%.o)
@@ -28,9 +29,6 @@ LXXFLAGS =
 all: $(EXE)
 
 test: $(TEST)
-
-d:
-	echo $(TMAIN) $(TDEP)
 
 clean:
 	rm -rf $(EXE) $(TEST) $(OBJDIR)
@@ -59,9 +57,13 @@ $(OBJDIR)%.d: $(SRCDIR)%.c | $(OBJDIR)
 	$(CC) -MM $< -MT $(subst .d,.o,$@) -MF $@
 
 # .dpp file
-$(OBJDIR)%.dpp:  $(SRCDIR)%.cpp | $(OBJDIR)
-	$(CXX) -MM $< -MT $(subst .dpp,.opp,$@) -MF $@
+$(OBJDIR)%.dpp: $(SRCDIR)%.cpp | $(OBJDIR)
+	$(CXX) -MM -MG $< -MT $(subst .dpp,.opp,$@) | sed 's/ /\\\n/g' | sed 's/^..\//src\/..\//g' | sed 's/.*\/\.\.\///g' > $@ # regex magic
 
-# obj-folder
-$(OBJDIR):
+# folders
+$(OBJDIR) $(LIBDIR):
 	mkdir $@
+
+# catch single header file
+$(LIBDIR)catch.hpp: | $(LIBDIR)
+	wget "https://raw.githubusercontent.com/philsquared/Catch/master/single_include/catch.hpp" -O $@
