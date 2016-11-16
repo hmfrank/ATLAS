@@ -6,7 +6,7 @@
 !CMakeLists.txt
 !Doxyfile
 !LICENSE
-!make.py
+!Makefile
 !README.md
 !inc/
 !inc/*
