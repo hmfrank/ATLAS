@@ -3,16 +3,17 @@ EXE = atlas
 # unit test executable
 TEST = utest
 
-SRCDIR = src/
-OBJDIR = bin/
+DOCDIR = doc/
 LIBDIR = lib/
+OBJDIR = bin/
+SRCDIR = src/
 
 SRC = $(wildcard $(SRCDIR)*.c)
 OBJ = $(SRC:$(SRCDIR)%.c=$(OBJDIR)%.o)
 DEP = $(SRC:$(SRCDIR)%.c=$(OBJDIR)%.d)
 TSRC = $(wildcard $(SRCDIR)*.cpp)
 TOBJ = $(filter-out $(OBJDIR)main.o, $(OBJ)) $(subst $(SRCDIR),$(OBJDIR),$(subst .cpp,.opp,$(TSRC)))
-TDEP = $(subst $(SRCDIR),$(OBJDIR),$(subst .cpp,.dpp,$(TSRC)))
+DEP = $(subst $(SRCDIR),$(OBJDIR),$(subst .cpp,.dpp,$(TSRC)))
 
 # C compiler and linker flags
 CC = gcc
@@ -24,9 +25,12 @@ CXX = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra -Werror
 LXXFLAGS =
 
-.PHONY: all test clean destroy
+.PHONY: all doc test clean destroy
 
 all: $(EXE)
+
+doc: | $(DOCDIR)
+	doxygen
 
 test: $(TEST)
 
@@ -34,7 +38,7 @@ clean:
 	rm -rf $(EXE) $(TEST) $(OBJDIR)
 
 destroy: clean
-	rm -rf $(LIBDIR)
+	rm -rf $(LIBDIR) $(DOCDIR)
 
 # link atlas
 $(EXE): $(OBJ)
@@ -64,7 +68,7 @@ $(OBJDIR)%.dpp: $(SRCDIR)%.cpp | $(OBJDIR)
 	$(CXX) -MM -MG $< -MT $(subst .dpp,.opp,$@) | sed 's/ /\\\n/g' | sed 's/^..\//src\/..\//g' | sed 's/.*\/\.\.\///g' > $@ # regex magic
 
 # folders
-$(OBJDIR) $(LIBDIR):
+$(OBJDIR) $(LIBDIR) $(DOCDIR):
 	mkdir $@
 
 # catch single header file
