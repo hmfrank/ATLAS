@@ -35,7 +35,7 @@ void errexit(const char *message, int error);
  * @param argv List of all command line arguments.
  * @return A status code (0 means success, anything else means something went wrong).
  */
-int main(int argc, char **argv)
+int main()
 {
 	char *keys[MAXN_DAYS];
 	size_t n_keys = 0;

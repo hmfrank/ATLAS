@@ -6,14 +6,10 @@
 !CMakeLists.txt
 !Doxyfile
 !LICENSE
-!make.py
+!Makefile
 !README.md
 !wc.sh
 !inc/
 !inc/*
 !src/
 !src/*
-
-# exclude test framework
-inc/catch.hpp
-

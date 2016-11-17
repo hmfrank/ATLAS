@@ -2,30 +2,34 @@
 This is a tool for analyzing apache log files and generating statistics. This project is still in early development, so
 the program can't do very much, for now.
 
-## Building ATLAS
-To build ATLAS simply run `./make.py`, which will automatically generate a makefile, run `make` and execute the program.
+## Makefile Targets
+### `make all`
+Compiles the main program and creates an executable called _atlas_.
 
-If you're wondering what the CMakeLists.txt is for: I just need that so CLion works properly but I don't really know
-how CMake works so I'm using the Python script. If you know CMake, you can use that, too.
+### `make test`
+Compiles the unit test and creates an executable called _utest_. The first time you run this command, the _Catch Test
+Framework_ single header file will be downloaded automatically from
+[here](https://raw.githubusercontent.com/philsquared/Catch/master/single_include/catch.hpp "catch.cpp").  
+[More information on the Catch Test Framework here.](https://github.com/philsquared/Catch "catch.cpp")
+
+### `make doc`
+Creates html documentation. The main page is located in _doc/html/index.html_.
+
+**NOTE:** [_Doxygen_](http://www.stack.nl/~dimitri/doxygen/) has to be installed on your system.
+
+### `make clean`
+Deletes all build files (object files and executables).
+
+### `make destroy`
+Deletes everything make has ever created (includes downloaded libraties and documentation). After running this command,
+your repo should look as if it was freshly cloned from Github.
 
 ## Running ATLAS
 To use ATLAS, simply pipe your log file into stdin like this: `./atlas < mylogfile.log`. ATLAS will print the number of
 requests and the number of bytes sent and received for each day.
 
-## Building / Running Unit Tests
-Works the same way as building the main project, except that you run `./make.py test`.
-
-**NOTE:** You have to have the _Catch test framework_ single header located at inc/catch.hpp. You can download that one 
-[here](https://raw.githubusercontent.com/philsquared/Catch/master/single_include/catch.hpp "catch.cpp").  
-[More information on the Catch test framework here.](https://github.com/philsquared/Catch "catch.cpp")
-
-## Docs, Bro?
-The documentation can be generated using [_Doxygen_](http://www.stack.nl/~dimitri/doxygen/). Once you have _Doxygen_
-installed, `cd` into the root project folder and run `doxygen`. This will create the documentation pages in the folder
-doc/html. Open doc/html/index.html to view the main page of the documentation.
-
 ## Log Format
 If you're using the Apache web server, this format will work: `%t#%h#%u#%s#%I#%O#%U#%{Referer}i#%m`. There is a more
 detailed specification in the documentation of `parseLogEntry()`.
 
-_Version_ 0.2
+_Version_ 0.2.1
