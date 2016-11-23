@@ -20,11 +20,7 @@ struct LogStats
 	size_t capacity;
 	size_t length;
 
-	struct
-	{
-		struct Date date;
-		struct DayCounter counter;
-	} data[0];
+	struct DayCounter data[0];
 };
 
 /**
@@ -39,10 +35,16 @@ struct LogStats *lgsCreate(size_t capacity);
 /**
  * Adds the information of the given log entry to the stats.
  *
- * @param this_ Points to the `struct LogStats` that stores the statistics.
+ * @param _this Points to the `struct LogStats` that stores the statistics.
  * @param entry Points to the `struct LogEntry` which information shall be added to the stats.
  * @return 0 on success, non-zero on failure.
  */
-int lgsAddLogEntry(struct LogStats *this_, struct LogEntry *entry);
+int lgsAddLogEntry(struct LogStats *_this, struct LogEntry *entry);
+
+/**
+ * Sorts the internal data of the stats by date.
+ * @param _this The LogStats to be sorted.
+ */
+void lgsSort(struct LogStats *_this);
 
 #endif //ATLAS_LOGSTATS_H

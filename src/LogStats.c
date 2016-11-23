@@ -46,15 +46,28 @@ int lgsAddLogEntry(struct LogStats *this, struct LogEntry *entry)
 		if (this->length >= this->capacity)
 			return 2;
 
+		memset(&(this->data[this->length]), 0, sizeof(this->data[0]));
 		this->data[this->length].date = entry->date;
-		memset(&(this->data[this->length].counter), 0, sizeof(this->data[0].counter));
 
 		i = (ssize_t)this->length;
 		this->length++;
 	}
 
 	// add information to the entry
-	dcAddLogEntry(&(this->data[i].counter), entry);
+	dcAddLogEntry(this->data + i, entry);
 
 	return 0;
+}
+
+void lgsSort(struct LogStats *this)
+{
+	if (this == NULL)
+		return;
+
+	int compare(const void *x, const void *y)
+	{
+		return dtCompare(&((struct DayCounter *)x)->date, &((struct DayCounter *)y)->date);
+	}
+
+	qsort(this->data, sizeof(this->data[0]), this->length, compare);
 }

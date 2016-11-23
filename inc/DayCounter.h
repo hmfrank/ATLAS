@@ -1,6 +1,7 @@
 #ifndef ATLAS_DAYINFO_H
 #define ATLAS_DAYINFO_H
 
+#include "Date.h"
 #include "LogEntry.h"
 
 /**
@@ -16,17 +17,25 @@
 struct DayCounter
 {
 	/**
+	 * The date this struct sotores information about.
+	 */
+	struct Date date;
+
+	/**
 	 * Number of requests.
 	 */
 	unsigned int n_requests;
+
 	/**
 	 * Number of users.
 	 */
 	unsigned int n_users;
+
 	/**
 	 * Number of bytes received.
 	 */
 	unsigned long long int n_bytes_in;
+
 	/**
 	 * Number of bytes sent.
 	 */
@@ -35,6 +44,7 @@ struct DayCounter
 
 /**
  * Adds some of the information stored in a LogEntry to a DayCounter.
+ * *NOTE:* This function does not check, if the date in `entry` matches with the date in `this_`.
  *
  * If either one of the two parameters is `NULL`, nothing happens.
  *
