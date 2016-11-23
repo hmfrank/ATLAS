@@ -14,6 +14,7 @@ extern "C"
 // TODO: test dtToNewString()
 // TODO: test dtCompare()
 // TODO: test lgeAddToDaycounter()
+// TODO: test struct LogStats
 
 // TODO: more tests for parseLogEntry()
 
