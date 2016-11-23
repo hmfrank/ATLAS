@@ -1,7 +1,6 @@
 #include <search.h>
 #include <stdlib.h>
-#include <string.h>
-#include "../inc/DayCounter.h"
+#include "../inc/LogStats.h"
 #include "../inc/parse.h"
 
 /**
@@ -25,8 +24,6 @@ size_t MAXN_DAYS = 42;
  */
 void errexit(const char *message, int error);
 
-
-// TODO: clean up main function
 /**
  * The main entry point of the program.
  * This is the first function that is called, when the program starts.
@@ -37,17 +34,17 @@ void errexit(const char *message, int error);
  */
 int main()
 {
-	char *keys[MAXN_DAYS];
-	size_t n_keys = 0;
+	struct LogStats stats;
 
-	hcreate(MAXN_DAYS * 2);
+	if (lgsCreate(&stats))
+		errexit("Some error occurred.", 1);
 
 	// read log entries from stream, until EOF
 	while (1)
 	{
-		struct LogEntry e;
+		struct LogEntry entry;
 
-		if (parseLogEntry(stdin, &e))
+		if (parseLogEntry(stdin, &entry))
 		{
 			if (feof(stdin))
 				break;
@@ -56,39 +53,15 @@ int main()
 		}
 		else
 		{
-			ENTRY *ptr;
-			ENTRY entry;
-
-			entry.key = dtToNewString(&e.date);
-			entry.data = NULL;
-
-			if (entry.key == NULL)
-				errexit("Out of memory!\n", 1);
-
-			ptr = hsearch(entry, ENTER);
-
-			// if entry was not in the hash table
-			if (ptr->data == NULL)
-			{
-				struct DayCounter *counter;
-
-				// add key
-				keys[n_keys] = entry.key;
-				n_keys++;
-
-				// create new empty counter
-				counter = calloc(1, sizeof(struct DayCounter));
-				if (counter == NULL)
-					errexit("Out of memory!\n", 1);
-
-				ptr->data = counter;
-			}
-
-			// add log entry to counter
-			lgeAddToDayCounter(&e, ptr->data);
+			lgsAddLogEntry(&stats, &entry);
 		}
 	}
 
+	lgsFreeResources(&stats);
+
+	return 0;
+
+	/*
 	// sort keys
 	int _strcmp(const void * a, const void *b)
 	{
@@ -112,15 +85,7 @@ int main()
 			free(ptr->data);
 		}
 	}
-
-	hdestroy();
-
-	for (size_t i = 0; i < n_keys; i++)
-	{
-		free(keys[i]);
-	}
-
-	return 0;
+	*/
 }
 
 void errexit(const char *message, int error)
