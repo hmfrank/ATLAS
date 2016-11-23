@@ -2,6 +2,8 @@
 #define ATLAS_LOGSTATS_H
 
 #include <search.h>
+#include "Date.h"
+#include "DayCounter.h"
 #include "LogEntry.h"
 
 /**
@@ -15,23 +17,24 @@
  */
 struct LogStats
 {
-	// TODO: specify struct LogStats
+	size_t capacity;
+	size_t length;
+
+	struct
+	{
+		struct Date date;
+		struct DayCounter counter;
+	} data[0];
 };
 
 /**
- * Create a new `struct LogStats`.
+ * Allocates and initializes a new `struct LogStats`.
+ * To prevent memory leaks, make sure you call `free()` on the returned pointer, once you don't need it anymore.
  *
- * @param this_ Points to the where the new struct is stored.
- * @return 0 on success, non-zero on failure.
+ * @param capacity The maximum number of days, that can be stored in the new LogStats.
+ * @return Pointer to the newly allocated struct or `NULL` on failure.
  */
-int lgsCreate(struct LogStats *this_);
-
-/**
- * Frees all resources used by a given `struct LogStats`.
- *
- * @param this_ Points to the `struct LogStats` which resources get freed.
- */
-void lgsFreeResources(struct LogStats *this_);
+struct LogStats *lgsCreate(size_t capacity);
 
 /**
  * Adds the information of the given log entry to the stats.

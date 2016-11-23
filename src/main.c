@@ -34,10 +34,12 @@ void errexit(const char *message, int error);
  */
 int main()
 {
-	struct LogStats stats;
+	struct LogStats *stats;
 
-	if (lgsCreate(&stats))
-		errexit("Some error occurred.", 1);
+	stats = lgsCreate(MAXN_DAYS);
+
+	if (stats == NULL)
+		errexit("Error!", 1);
 
 	// read log entries from stream, until EOF
 	while (1)
@@ -53,11 +55,12 @@ int main()
 		}
 		else
 		{
-			lgsAddLogEntry(&stats, &entry);
+			if (lgsAddLogEntry(stats, &entry) != 0)
+				fprintf(stderr, "Can't add log entry to stats!\n");
 		}
 	}
 
-	lgsFreeResources(&stats);
+	free(stats);
 
 	return 0;
 
