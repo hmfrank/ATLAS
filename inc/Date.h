@@ -17,10 +17,28 @@
  */
 struct Date
 {
-	unsigned char day;
-	unsigned char month;
+	// the member variable have to be in this order in order for `dtCompare()` to work properly.
 	unsigned short year;
+	unsigned char month;
+	unsigned char day;
 };
+
+/**
+ * Compares two dates.
+ *
+ * @return 0 if both dates are equal or both dates are `NULL`.<br/>
+ * &lt; 0 if `_this` is before `_that` or if only `_this` is `NULL`.<br/>
+ * &gt; 0 if `_this` is after `_that` or if only `_that` is `NULL`.
+ */
+int dtCompare(struct Date *_this, struct Date *that);
+
+/**
+ * Same as dtToString but allocates a new string.
+ *
+ * @param _this The date that gets converted to a string.
+ * @return Pointer to the newly allocated string, or `NULL` on failure.
+ */
+char *dtToNewString(struct Date *_this);
 
 /**
  * Converts a Date to string.
@@ -32,12 +50,5 @@ struct Date
  * @return The length of the string (not counting the null-terminator), or a negative number on failure.
  */
 int dtToString(struct Date *_this, char *buffer);
-
-/**
- * Same as dtToString but allocated a new string.
- * @param _this The date that gets converted to a string.
- * @return Pointer to the newly allocated string, or `NULL` on failure.
- */
-char *dtToNewString(struct Date *_this);
 
 #endif //ATLAS_DATE_H

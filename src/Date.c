@@ -9,14 +9,21 @@
  * Contains implementations of the functions defined in Date.h.
  */
 
-int dtToString(struct Date *this, char *buffer)
+int dtCompare(struct Date *this, struct Date *that)
 {
 	if (this == NULL)
-		return 0;
-	if (buffer == NULL)
-		return 0;
+	{
+		if (that == NULL)
+			return 0;
+		else
+			return -1;
+	}
+	else if (that == NULL)
+	{
+		return 1;
+	}
 
-	return sprintf(buffer, "%04d/%02d/%02d", this->year, this->month, this->day);
+	return memcmp(this, that, sizeof(struct Date));
 }
 
 char *dtToNewString(struct Date *this)
@@ -38,4 +45,14 @@ char *dtToNewString(struct Date *this)
 
 	strcpy(str, buffer);
 	return str;
+}
+
+int dtToString(struct Date *this, char *buffer)
+{
+	if (this == NULL)
+		return 0;
+	if (buffer == NULL)
+		return 0;
+
+	return sprintf(buffer, "%04d/%02d/%02d", this->year, this->month, this->day);
 }
