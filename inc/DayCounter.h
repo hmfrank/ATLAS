@@ -1,6 +1,8 @@
 #ifndef ATLAS_DAYINFO_H
 #define ATLAS_DAYINFO_H
 
+#include "LogEntry.h"
+
 /**
  * @file DayCounter.h
  *
@@ -30,5 +32,15 @@ struct DayCounter
 	 */
 	unsigned long long int n_bytes_out;
 };
+
+/**
+ * Adds some of the information stored in a LogEntry to a DayCounter.
+ *
+ * If either one of the two parameters is `NULL`, nothing happens.
+ *
+ * @param this_ Pointer to a DayCounter to add to.
+ * @param entry Pointer to the LogEntry to get the information from.
+ */
+void dcAddLogEntry(struct DayCounter *this_, struct LogEntry *entry);
 
 #endif //ATLAS_DAYINFO_H

@@ -19,16 +19,3 @@ void lgeFreeStrings(struct LogEntry *this)
 	if (this->requested_file != NULL) free(this->requested_file);
 	if (this->referer != NULL) free(this->referer);
 }
-
-void lgeAddToDayCounter(struct LogEntry *this, struct DayCounter *dc)
-{
-	if (this == NULL)
-		return;
-	if (dc == NULL)
-		return;
-
-	dc->n_requests++;
-	// TODO: increment dc->n_useres
-	dc->n_bytes_in += this->request_size;
-	dc->n_bytes_out += this->response_size;
-}

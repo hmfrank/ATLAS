@@ -2,7 +2,6 @@
 #define ATLAS_LOGENTRY_H
 
 #include "Date.h"
-#include "DayCounter.h"
 
 /**
  * @file LogEntry.h
@@ -86,15 +85,5 @@ struct LogEntry
  * @param _this Pointer to the LogEntry which strings get freed.
  */
 void lgeFreeStrings(struct LogEntry *_this);
-
-/**
- * Adds some of the information stored in a LogEntry to a DayCounter.
- *
- * If either one of the two parameters is `NULL`, nothing happens.
- *
- * @param _this Pointer to the LogEntry to get the information from.
- * @param dc Pointer to a DayCounter to add to.
- */
-void lgeAddToDayCounter(struct LogEntry *_this, struct DayCounter *dc);
 
 #endif //ATLAS_LOGENTRY_H
