@@ -60,35 +60,12 @@ int main()
 		}
 	}
 
+	lgsSort(stats);
+	lgsPrint(stats, stdout);
+
 	free(stats);
 
 	return 0;
-
-	/*
-	// sort keys
-	int _strcmp(const void * a, const void *b)
-	{
-		return strcmp(*(const char **)a, *(const char **)b);
-	}
-	qsort(keys, n_keys, sizeof(char*), _strcmp);
-
-	// print data and free memory
-	printf("%10s %10s %10s %10s\n", "DATE", "REQUESTS", "IN", "OUT");
-	for (size_t i = 0; i < n_keys; i++)
-	{
-		ENTRY entry = { .key = keys[i] };
-		ENTRY *ptr = hsearch(entry, FIND);
-
-		if (ptr != NULL)
-		{
-			struct DayCounter *counter = (struct DayCounter*)ptr->data;
-
-			printf("%10s %10d %10llu %10llu\n", ptr->key, counter->n_requests, counter->n_bytes_in, counter->n_bytes_out);
-
-			free(ptr->data);
-		}
-	}
-	*/
 }
 
 void errexit(const char *message, int error)

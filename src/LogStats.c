@@ -59,6 +59,27 @@ int lgsAddLogEntry(struct LogStats *this, struct LogEntry *entry)
 	return 0;
 }
 
+void lgsPrint(struct LogStats *this, FILE *stream)
+{
+	if (this == NULL)
+		return;
+	if (stream == NULL)
+		return;
+
+	// print header
+	fprintf(stream, "%10s %10s %10s %10s\n", "DATE", "REQUESTS", "IN", "OUT");
+
+	// print data
+	for (size_t i = 0; i < this->length; i++)
+	{
+		struct DayCounter counter = this->data[i];
+		char str[18];
+
+		dtToString(&counter.date, str);
+		fprintf(stream, "%10s %10u %10llu %10llu", str, counter.n_requests, counter.n_bytes_in, counter.n_bytes_out);
+	}
+}
+
 void lgsSort(struct LogStats *this)
 {
 	if (this == NULL)
