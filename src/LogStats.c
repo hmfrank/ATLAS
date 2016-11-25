@@ -36,7 +36,7 @@ int lgsAddLogEntry(struct LogStats *this, struct LogEntry *entry)
 	// check if there's already an entry for the given date
 	for (i = this->length - 1; i >= 0; i--)
 	{
-		if (dtCompare(&(this->data[0].date), &(entry->date)) == 0)
+		if (dtCompare(&(this->data[i].date), &(entry->date)) == 0)
 			break;
 	}
 
@@ -76,7 +76,7 @@ void lgsPrint(struct LogStats *this, FILE *stream)
 		char str[18];
 
 		dtToString(&counter.date, str);
-		fprintf(stream, "%10s %10u %10llu %10llu", str, counter.n_requests, counter.n_bytes_in, counter.n_bytes_out);
+		fprintf(stream, "%10s %10u %10llu %10llu\n", str, counter.n_requests, counter.n_bytes_in, counter.n_bytes_out);
 	}
 }
 
