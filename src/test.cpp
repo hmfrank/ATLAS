@@ -8,6 +8,7 @@ extern "C"
 #include "../inc/Date.h"
 #include "../inc/LogEntry.h"
 #include "../inc/parse.h"
+extern unsigned short toHttpMethod(const char *str);
 };
 
 // TODO: test dtToString()
@@ -20,8 +21,6 @@ extern "C"
 
 // TODO: run valigrind memory leak tests
 
-/*
-extern unsigned short toHttpMethod(const char *str);
 TEST_CASE("to HTTP method", "[src/parse.c/toHttpMethod]")
 {
 	REQUIRE(toHttpMethod(NULL) == HTTP_UNKNOWN);
@@ -36,7 +35,7 @@ TEST_CASE("to HTTP method", "[src/parse.c/toHttpMethod]")
 	REQUIRE(toHttpMethod("GETS") == HTTP_UNKNOWN);
 	REQUIRE(toHttpMethod("") == HTTP_UNKNOWN);
 }
-*/
+
 
 TEST_CASE("architecture tests", "[architecture]")
 {
