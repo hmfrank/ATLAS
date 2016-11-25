@@ -90,5 +90,5 @@ void lgsSort(struct LogStats *this)
 		return dtCompare(&((struct DayCounter *)x)->date, &((struct DayCounter *)y)->date);
 	}
 
-	qsort(this->data, sizeof(this->data[0]), this->length, compare);
+	qsort(this->data, this->length, sizeof(this->data[0]), compare);
 }
