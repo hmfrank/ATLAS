@@ -45,26 +45,23 @@ unsigned short toHttpMethod(const char *str)
  * @param str the first 3 characters of the month name (not case sensitive)
  * @return the month number (1 - 12) or 0 on failure.
  */
-static unsigned char toMonth(char *str)
+unsigned char toMonth(const char *str)
 {
 	if (str == NULL)
 		return 0;
 
-	for (int i = 0; i < 3; i++)
-		str[i] = (char)tolower(str[i]);
-
-	if (!strcmp(str, "jan")) return 1;
-	else if (!strcmp(str, "feb")) return 2;
-	else if (!strcmp(str, "mar")) return 3;
-	else if (!strcmp(str, "apr")) return 4;
-	else if (!strcmp(str, "may")) return 5;
-	else if (!strcmp(str, "jun")) return 6;
-	else if (!strcmp(str, "jul")) return 7;
-	else if (!strcmp(str, "aug")) return 8;
-	else if (!strcmp(str, "sep")) return 9;
-	else if (!strcmp(str, "oct")) return 10;
-	else if (!strcmp(str, "nov")) return 11;
-	else if (!strcmp(str, "dec")) return 12;
+	if (!strcasecmp(str, "jan")) return 1;
+	else if (!strcasecmp(str, "feb")) return 2;
+	else if (!strcasecmp(str, "mar")) return 3;
+	else if (!strcasecmp(str, "apr")) return 4;
+	else if (!strcasecmp(str, "may")) return 5;
+	else if (!strcasecmp(str, "jun")) return 6;
+	else if (!strcasecmp(str, "jul")) return 7;
+	else if (!strcasecmp(str, "aug")) return 8;
+	else if (!strcasecmp(str, "sep")) return 9;
+	else if (!strcasecmp(str, "oct")) return 10;
+	else if (!strcasecmp(str, "nov")) return 11;
+	else if (!strcasecmp(str, "dec")) return 12;
 	else return 0;
 }
 

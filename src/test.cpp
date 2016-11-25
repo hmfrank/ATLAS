@@ -9,6 +9,7 @@ extern "C"
 #include "../inc/LogEntry.h"
 #include "../inc/parse.h"
 extern unsigned short toHttpMethod(const char *str);
+extern unsigned char toMonth(const char *str);
 };
 
 // TODO: test dtToString()
@@ -60,6 +61,27 @@ TEST_CASE("to HTTP method", "[src/parse.c/toHttpMethod]")
 	REQUIRE(toHttpMethod("tRaCe") == HTTP_TRACE);
 	REQUIRE(toHttpMethod("GETS") == HTTP_UNKNOWN);
 	REQUIRE(toHttpMethod("") == HTTP_UNKNOWN);
+}
+
+TEST_CASE("to month", "[src/parse.c/toMonth]")
+{
+	REQUIRE(toMonth(NULL) == 0);
+
+	REQUIRE(toMonth("jan") == 1);
+	REQUIRE(toMonth("feB") == 2);
+	REQUIRE(toMonth("mAr") == 3);
+	REQUIRE(toMonth("aPR") == 4);
+	REQUIRE(toMonth("May") == 5);
+	REQUIRE(toMonth("JuN") == 6);
+	REQUIRE(toMonth("JUl") == 7);
+	REQUIRE(toMonth("AUG") == 8);
+	REQUIRE(toMonth("sep") == 9);
+	REQUIRE(toMonth("ocT") == 10);
+	REQUIRE(toMonth("nOv") == 11);
+	REQUIRE(toMonth("dEC") == 12);
+
+	REQUIRE(toMonth("august") == 0);
+	REQUIRE(toMonth("") == 0);
 }
 
 // TODO: test too long input
