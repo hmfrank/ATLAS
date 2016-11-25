@@ -20,21 +20,7 @@ extern unsigned short toHttpMethod(const char *str);
 // TODO: more tests for parseLogEntry()
 
 // TODO: run valigrind memory leak tests
-
-TEST_CASE("to HTTP method", "[src/parse.c/toHttpMethod]")
-{
-	REQUIRE(toHttpMethod(NULL) == HTTP_UNKNOWN);
-	REQUIRE(toHttpMethod("CONNECT") == HTTP_CONNECT);
-	REQUIRE(toHttpMethod("delete") == HTTP_DELETE);
-	REQUIRE(toHttpMethod("gET") == HTTP_GET);
-	REQUIRE(toHttpMethod("HeAd") == HTTP_HEAD);
-	REQUIRE(toHttpMethod("optIons") == HTTP_OPTIONS);
-	REQUIRE(toHttpMethod("POST") == HTTP_POST);
-	REQUIRE(toHttpMethod("put") == HTTP_PUT);
-	REQUIRE(toHttpMethod("tRaCe") == HTTP_TRACE);
-	REQUIRE(toHttpMethod("GETS") == HTTP_UNKNOWN);
-	REQUIRE(toHttpMethod("") == HTTP_UNKNOWN);
-}
+// TODO: split test into multiple soruce files
 
 
 TEST_CASE("architecture tests", "[architecture]")
@@ -48,6 +34,32 @@ TEST_CASE("architecture tests", "[architecture]")
 	REQUIRE(UCHAR_MAX <= 99999);
 	// for implementation of parseLogEntry
 	REQUIRE(LLONG_MAX >= 9999);
+}
+
+//
+// ============   Date.h   ==========
+//
+
+//
+// ============   LogEntry.h   ==========
+//
+
+//
+// ============   parse.h   ==========
+//
+TEST_CASE("to HTTP method", "[src/parse.c/toHttpMethod]")
+{
+	REQUIRE(toHttpMethod(NULL) == HTTP_UNKNOWN);
+	REQUIRE(toHttpMethod("CONNECT") == HTTP_CONNECT);
+	REQUIRE(toHttpMethod("delete") == HTTP_DELETE);
+	REQUIRE(toHttpMethod("gET") == HTTP_GET);
+	REQUIRE(toHttpMethod("HeAd") == HTTP_HEAD);
+	REQUIRE(toHttpMethod("optIons") == HTTP_OPTIONS);
+	REQUIRE(toHttpMethod("POST") == HTTP_POST);
+	REQUIRE(toHttpMethod("put") == HTTP_PUT);
+	REQUIRE(toHttpMethod("tRaCe") == HTTP_TRACE);
+	REQUIRE(toHttpMethod("GETS") == HTTP_UNKNOWN);
+	REQUIRE(toHttpMethod("") == HTTP_UNKNOWN);
 }
 
 // TODO: test too long input
