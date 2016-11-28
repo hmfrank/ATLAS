@@ -34,7 +34,7 @@ struct LogStats
 struct LogStats *lgsCreate(size_t capacity);
 
 /**
- * Adds the information of the given log entry to the stats.
+ * Adds the information about the given log entry to the stats.
  *
  * @param _this Points to the LogStats that stores the statistics.
  * @param entry Points to the LogEntry which information shall be added to the stats.
