@@ -50,9 +50,9 @@ char *dtToNewString(struct Date *this)
 int dtToString(struct Date *this, char *buffer)
 {
 	if (this == NULL)
-		return 0;
+		return -1;
 	if (buffer == NULL)
-		return 0;
+		return -1;
 
 	return sprintf(buffer, "%04d/%02d/%02d", this->year, this->month, this->day);
 }
