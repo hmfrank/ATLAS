@@ -7,6 +7,8 @@
  * @file LogStats.c
  *
  * Contains the implementation of the functions defined in LogStats.h.
+ *
+ * @see LogStats.h
  */
 
 struct LogStats *lgsCreate(size_t capacity)

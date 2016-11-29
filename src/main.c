@@ -7,8 +7,6 @@
  * @file main.c
  *
  * File that contains the main function.
- *
- * @see main
  */
 
 /**

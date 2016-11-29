@@ -14,13 +14,36 @@
  */
 
 /**
- * Stores statistical information about an entire log file.
+ * Stores statistical information about an entire log file. Basically it's just an array of `struct DayCounter`, where
+ * one `DayCounter` is stored for each day in the log.
+ *
+ * You should only create instances of `LogStats` using `lgsCreate()`. Also note that instances of this struct can only
+ * be stored on the heap, not on the stack, because the memory for the array data is allocated right behind the actual
+ * struct data. This means, that you'll always have to use a pointer to `struct LogStats`, which you can free with a
+ * normal `free()` call.
+ *
+ * Methods of the struct start with "lgs".
+ *
+ * @see lgsCreate()
+ * @see lgsAddLogEntry()
+ * @see lgsPrint()
+ * @see lgsSort()
  */
 struct LogStats
 {
+	/**
+	 * The maximum number of items that memory is allocated for.
+	 */
 	size_t capacity;
+
+	/**
+	 * The actual number of elements, that are stored in the array.
+	 */
 	size_t length;
 
+	/**
+	 * Points to the first element of the array (which is stored right behind the atucal struct in memory).
+	 */
 	struct DayCounter data[0];
 };
 

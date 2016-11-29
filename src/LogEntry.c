@@ -6,7 +6,7 @@
  *
  * Contains the implementatoins of the methods defined in LogEntry.h.
  *
- * @see LogEntry.h.
+ * @see LogEntry.h
  */
 
 void lgeFreeStrings(struct LogEntry *this)

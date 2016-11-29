@@ -7,6 +7,8 @@
  * @file Date.c
  *
  * Contains implementations of the functions defined in Date.h.
+ *
+ * @see Date.h
  */
 
 int dtCompare(struct Date *this, struct Date *that)

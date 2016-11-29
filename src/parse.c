@@ -9,6 +9,8 @@
  * @file parse.c
  *
  * Contains implementations of the functions defined in parse.h plus some helper functions.
+ *
+ * @see parse.h
  */
 
 /**
@@ -18,9 +20,9 @@
 
 /**
  * Converts a string to a HTTP method constant.
- * The constants defined in Logresult->h are used.
+ * The constants defined in LogEntry.h are used.
  *
- * @see Logresult->h
+ * @see LogEntry.h
  *
  * @param str A string that represents a HTTP method. If `str` is `NULL`, `HTTP_UNKNOWN` is returned.
  * @return the constant for the  HTTP method, `str` represents.

@@ -1,5 +1,13 @@
 #include "../inc/DayCounter.h"
 
+/**
+ * @file DayCounter.c
+ *
+ * Contains implementations of the functions defined in DayCounter.h.
+ *
+ * @see DayCounter.h
+ */
+
 void dcAddLogEntry(struct DayCounter *this, struct LogEntry *entry)
 {
 	if (this == NULL)

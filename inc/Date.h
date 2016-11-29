@@ -8,12 +8,18 @@
  *
  * Contains the definition of `struct Date`, as well as prototypes of its methods.
  *
- * @see struct Date
+ * @see Date.c
  */
 
 /**
  * Represents a date.
  * Only day, month, year, no time.
+ *
+ * Methods of this struct start with "dt".
+ *
+ * @see dtCompare()
+ * @see dtToNewString()
+ * @see dtToString()
  */
 struct Date
 {
@@ -46,7 +52,7 @@ char *dtToNewString(struct Date *_this);
  * unless the year is greater than 9999 or day or month are greater than 99.
  *
  * @param _this The date that gets converted to a string.
- * @param buffer Points to the area where the string is stored.
+ * @param buffer Points to the memory where the string is stored.
  * @return The length of the string (not counting the null-terminator), or a negative number on failure.
  */
 int dtToString(struct Date *_this, char *buffer);

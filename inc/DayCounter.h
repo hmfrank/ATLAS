@@ -7,12 +7,18 @@
 /**
  * @file DayCounter.h
  *
- * Contains the definition of `struct DayCounter`.
+ * Contains the definition of `struct DayCounter` as well as the prototypes of its methods.
+ *
+ * @see DayCounter.c
  */
 
 // TODO: keep track of which user was already added (bloom filter!)
 /**
  * Stores log information about a single day.
+ *
+ * Methods of this struct start with "dc".
+ *
+ * @see dcAddLogEntry()
  */
 struct DayCounter
 {
@@ -44,6 +50,7 @@ struct DayCounter
 
 /**
  * Adds some of the information stored in a LogEntry to a DayCounter.
+ *
  * *NOTE:* This function does not check, if the date in `entry` matches with the date in `this_`.
  *
  * If either one of the two parameters is `NULL`, nothing happens.

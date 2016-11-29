@@ -8,7 +8,7 @@
  *
  * Contains the definition of `struct LogEntry`, as well as prototypes of its methods.
  *
- * @see struct LogEntry
+ * @see LogEntry.c
  */
 
 #define HTTP_CONNECT 1

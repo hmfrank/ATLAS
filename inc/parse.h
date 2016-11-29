@@ -8,6 +8,8 @@
  * @file parse.h
  *
  * Contains function prototypes for parsing a log file.
+ *
+ * @see parse.c
  */
 
 /**
