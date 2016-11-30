@@ -26,6 +26,14 @@ struct LogStats *lgsCreate(size_t capacity)
 	return stats;
 }
 
+void lgsDestroy(struct LogStats *this)
+{
+	if (this != NULL)
+	{
+		free(this);
+	}
+}
+
 int lgsAddLogEntry(struct LogStats *this, struct LogEntry *entry)
 {
 	if (this == NULL)

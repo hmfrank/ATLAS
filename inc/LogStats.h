@@ -17,14 +17,13 @@
  * Stores statistical information about an entire log file. Basically it's just an array of `struct DayCounter`, where
  * one `DayCounter` is stored for each day in the log.
  *
- * You should only create instances of `LogStats` using `lgsCreate()`. Also note that instances of this struct can only
- * be stored on the heap, not on the stack, because the memory for the array data is allocated right behind the actual
- * struct data. This means, that you'll always have to use a pointer to `struct LogStats`, which you can free with a
- * normal `free()` call.
+ * You should only create instances of `LogStats` using `lgsCreate()` and when you don't need them anymore, pass them to
+ * `lgsDestroy()`.
  *
  * Methods of the struct start with "lgs".
  *
  * @see lgsCreate()
+ * @see lgsDestroy()
  * @see lgsAddLogEntry()
  * @see lgsPrint()
  * @see lgsSort()
@@ -49,12 +48,20 @@ struct LogStats
 
 /**
  * Allocates and initializes a new LogStats.
- * To prevent memory leaks, make sure you call `free()` on the returned pointer, once you don't need it anymore.
+ * To prevent memory leaks, make sure you call `lgsDestroy()` on the returned pointer, once you don't need it anymore.
  *
  * @param capacity The maximum number of days, that can be stored in the new LogStats.
  * @return Pointer to the newly allocated struct or `NULL` on failure.
  */
 struct LogStats *lgsCreate(size_t capacity);
+
+/**
+ * Frees all the memory used by the given stats.
+ * If `_this` is `NULL`, nothing happens.
+ *
+ * @param _this Points to the LogStats that are freed.
+ */
+void lgsDestroy(struct LogStats *_this);
 
 /**
  * Adds the information about the given log entry to the stats.

@@ -61,7 +61,7 @@ int main()
 	lgsSort(stats);
 	lgsPrint(stats, stdout);
 
-	free(stats);
+	lgsDestroy(stats);
 
 	return 0;
 }

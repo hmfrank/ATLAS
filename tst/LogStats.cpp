@@ -12,11 +12,12 @@ TEST_CASE("log stats create", "[src/LogStats.c/lgsCreate]")
 	stats = lgsCreate(0);
 	REQUIRE(stats->capacity == 0);
 	REQUIRE(stats->length == 0);
-	free(stats);
+	lgsDestroy(stats);
 
 	stats = lgsCreate(41);
 	REQUIRE(stats->capacity == 41);
 	REQUIRE(stats->length == 0);
+	lgsDestroy(stats);
 }
 
 TEST_CASE("log stats add log entry", "[src/LogStats.c/lgsAddLogEntry")
@@ -50,7 +51,7 @@ TEST_CASE("log stats add log entry", "[src/LogStats.c/lgsAddLogEntry")
 	lgsAddLogEntry(stats, &entry);
 	REQUIRE(stats->length == 2);
 
-	free(stats);
+	lgsDestroy(stats);
 }
 
 TEST_CASE("log stats sort", "[src/LogStats.c/lgsSort")
@@ -78,5 +79,5 @@ TEST_CASE("log stats sort", "[src/LogStats.c/lgsSort")
 		prev = stats->data[i].date;
 	}
 
-	free(stats);
+	lgsDestroy(stats);
 }
