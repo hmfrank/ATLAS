@@ -185,7 +185,7 @@ TEST_CASE("log stats sort", "[src/LogStats.c/lgsSort")
 
 	// check if list is sorted by date
 	prev = (struct Date){ .year = 0, .month = 1, .day = 1 };
-	for (int i = 0; i < stats->length; i++)
+	for (size_t i = 0; i < stats->length; i++)
 	{
 		REQUIRE(dtCompare(&prev, &(stats->data[i].date)) < 0);
 		prev = stats->data[i].date;
