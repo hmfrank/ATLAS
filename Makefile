@@ -13,7 +13,7 @@ OBJ = $(SRC:$(SRCDIR)%.c=$(OBJDIR)%.o)
 DEP = $(SRC:$(SRCDIR)%.c=$(OBJDIR)%.d)
 TSRC = $(wildcard $(SRCDIR)*.cpp)
 TOBJ = $(filter-out $(OBJDIR)main.o, $(OBJ)) $(subst $(SRCDIR),$(OBJDIR),$(subst .cpp,.opp,$(TSRC)))
-DEP = $(subst $(SRCDIR),$(OBJDIR),$(subst .cpp,.dpp,$(TSRC)))
+TDEP = $(subst $(SRCDIR),$(OBJDIR),$(subst .cpp,.dpp,$(TSRC)))
 
 # C compiler and linker flags
 CC = gcc
