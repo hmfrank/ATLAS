@@ -40,10 +40,15 @@ struct AvlNode
  * implementation every element occures at most once in the tree). Searching, inserting and deleting elements can be
  * done in logarithmic time (with respect to the number of elements stored in the tree).
  *
+ * You should always call `avlReset()` before and after you use an AVL tree.
+ *
  * Methods of this struct start with "avl".
  *
  * @see https://en.wikipedia.org/wiki/AVL_tree
- * @see avlInit()
+ * @see avlReset()
+ * @see avlContains()
+ * @see avlDelete()
+ * @see avlInsert()
  * @see avlIsEmpty()
  */
 struct AvlTree
@@ -64,14 +69,17 @@ struct AvlTree
 };
 
 /**
- * Initializes an empry AVL tree.
+ * Frees all memory used by the tree itself (not the actual data) and initializes an empty tree.
  *
- * You should call this function on every tree before you do anything else with it.
+ * You should always call `avlReset()` before and after you use an AVL tree.
  *
- * @param _this Points to the tree that gets initialized.
- * @param compare The comparrison function for the tree.
+ * @param _this Points to the tree that gets resetted.
+ * @param compare The comparrison function for the tree. It `compare` is `NULL` the comparrison function of the tree
+ * gets initialized to a dummy function, that always returns 0.
+ *
+ * @see AvlTree::compare
  */
-void avlInit(struct AvlTree *_this, int (*compare)(const void *, const void *));
+void avlReset(struct AvlTree *_this, int (*compare)(const void *, const void *));
 
 /**
  * Checks if a tree contains a specific item.
