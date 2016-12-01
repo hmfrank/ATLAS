@@ -1,6 +1,3 @@
-#include <stdlib.h>
-#include "../inc/LogEntry.h"
-
 /**
  * @file LogEntry.c
  *
@@ -8,6 +5,9 @@
  *
  * @see LogEntry.h
  */
+
+#include <stdlib.h>
+#include "../inc/LogEntry.h"
 
 void lgeFreeStrings(struct LogEntry *this)
 {

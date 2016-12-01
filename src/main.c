@@ -1,13 +1,13 @@
-#include <search.h>
-#include <stdlib.h>
-#include "../inc/LogStats.h"
-#include "../inc/parse.h"
-
 /**
  * @file main.c
  *
  * File that contains the main function.
  */
+
+#include <search.h>
+#include <stdlib.h>
+#include "../inc/LogStats.h"
+#include "../inc/parse.h"
 
 /**
  * The maximum number of days the program can store information about.

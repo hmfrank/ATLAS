@@ -1,8 +1,6 @@
 #ifndef ATLAS_DATE_H
 #define ATLAS_DATE_H
 
-#include <stddef.h>
-
 /**
  * @file Date.h
  *
@@ -10,6 +8,8 @@
  *
  * @see Date.c
  */
+
+#include <stddef.h>
 
 /**
  * Represents a date.

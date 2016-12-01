@@ -1,17 +1,17 @@
 #ifndef ATLAS_LOGSTATS_H
 #define ATLAS_LOGSTATS_H
 
-#include <search.h>
-#include <stdio.h>
-#include "Date.h"
-#include "DayCounter.h"
-#include "LogEntry.h"
-
 /**
  * @file LogStats.h
  *
  * Contains the definition of `struct LogStats`, as well as some related function prototypes.
  */
+
+#include <search.h>
+#include <stdio.h>
+#include "Date.h"
+#include "DayCounter.h"
+#include "LogEntry.h"
 
 /**
  * Stores statistical information about an entire log file. Basically it's just an array of `struct DayCounter`, where

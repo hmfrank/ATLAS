@@ -1,8 +1,3 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include "../inc/Date.h"
-
 /**
  * @file Date.c
  *
@@ -10,6 +5,11 @@
  *
  * @see Date.h
  */
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include "../inc/Date.h"
 
 int dtCompare(struct Date *this, struct Date *that)
 {

@@ -1,13 +1,13 @@
 #ifndef ATLAS_LIST_H
 #define ATLAS_LIST_H
 
-#include <stddef.h>
-
 /**
  * @file List.h
  *
  * Contains the definition of `struct List`, as well as the prototypes of its methods.
  */
+
+#include <stddef.h>
 
 /**
  * A variable length list of void pointers. This list has variable-length, however it does not reallocate memory when

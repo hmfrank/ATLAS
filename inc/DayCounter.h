@@ -1,9 +1,6 @@
 #ifndef ATLAS_DAYINFO_H
 #define ATLAS_DAYINFO_H
 
-#include "Date.h"
-#include "LogEntry.h"
-
 /**
  * @file DayCounter.h
  *
@@ -11,6 +8,9 @@
  *
  * @see DayCounter.c
  */
+
+#include "Date.h"
+#include "LogEntry.h"
 
 // TODO: keep track of which user was already added (bloom filter!)
 /**

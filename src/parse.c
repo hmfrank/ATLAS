@@ -1,10 +1,3 @@
-#include <ctype.h>
-#include <limits.h>
-#include <stdlib.h>
-#include <string.h>
-#include <strings.h>
-#include "../inc/parse.h"
-
 /**
  * @file parse.c
  *
@@ -12,6 +5,13 @@
  *
  * @see parse.h
  */
+
+#include <ctype.h>
+#include <limits.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include "../inc/parse.h"
 
 /**
  * The size of the line buffer used in `parseLogEntry()`.

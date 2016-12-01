@@ -1,9 +1,6 @@
 #ifndef ATLAS_PARSE_H
 #define ATLAS_PARSE_H
 
-#include <stdio.h>
-#include "LogEntry.h"
-
 /**
  * @file parse.h
  *
@@ -11,6 +8,9 @@
  *
  * @see parse.c
  */
+
+#include <stdio.h>
+#include "LogEntry.h"
 
 /**
  * Parses a line of a log file to create a LogEntry.

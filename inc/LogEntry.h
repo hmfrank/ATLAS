@@ -1,8 +1,6 @@
 #ifndef ATLAS_LOGENTRY_H
 #define ATLAS_LOGENTRY_H
 
-#include "Date.h"
-
 /**
  * @file LogEntry.h
  *
@@ -10,6 +8,8 @@
  *
  * @see LogEntry.c
  */
+
+#include "Date.h"
 
 #define HTTP_CONNECT 1
 #define HTTP_DELETE 2

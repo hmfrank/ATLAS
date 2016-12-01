@@ -1,8 +1,3 @@
-#include <stdlib.h>
-#include <string.h>
-#include <sys/types.h>
-#include "../inc/LogStats.h"
-
 /**
  * @file LogStats.c
  *
@@ -10,6 +5,11 @@
  *
  * @see LogStats.h
  */
+
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include "../inc/LogStats.h"
 
 struct LogStats *lgsCreate(size_t capacity)
 {

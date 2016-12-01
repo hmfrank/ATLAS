@@ -1,5 +1,3 @@
-#include "../inc/DayCounter.h"
-
 /**
  * @file DayCounter.c
  *
@@ -7,6 +5,8 @@
  *
  * @see DayCounter.h
  */
+
+#include "../inc/DayCounter.h"
 
 void dcAddLogEntry(struct DayCounter *this, struct LogEntry *entry)
 {
