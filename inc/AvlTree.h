@@ -70,6 +70,7 @@ struct AvlTree
 
 /**
  * Frees all memory used by the tree itself (not the actual data) and initializes an empty tree.
+ * If `_this` is `NULL`, nothing happens.
  *
  * You should always call `avlReset()` before and after you use an AVL tree.
  *
