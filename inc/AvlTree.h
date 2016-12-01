@@ -90,7 +90,7 @@ void avlReset(struct AvlTree *_this, int (*compare)(const void *, const void *))
  *
  * @param _this Points to the tree to inspect.
  * @param item The item that is searched in the tree.
- * @return 0 if `item` was not found in the tree<br/>
+ * @return 0 if `item` was not found or if `_this` is `NULL`<br/>
  * 1, if `item` was found in the tree
  */
 int avlContains(struct AvlTree *_this, void *item);
@@ -101,7 +101,7 @@ int avlContains(struct AvlTree *_this, void *item);
  * @param _this Points to the tree to remove the item from.
  * @param item The item to remove.
  * @return 1, if the item was successfully removed<br/>
- * 0, if the item was not removed, because it was not in the tree, in the first place
+ * 0, if the item was not removed or if `_this` is `NULL`
  */
 int avlDelete(struct AvlTree *_this, void *item);
 
