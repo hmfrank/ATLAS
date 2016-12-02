@@ -149,3 +149,15 @@ int avlContains(struct AvlTree *this, void *item)
 {
 	return nodeSearch(this, item, 0) != NULL;
 }
+
+int avlInsert(struct AvlTree *this, void *item)
+{
+	struct AvlNode *new_node;
+
+	new_node = nodeSearch(this, item, 1);
+	if (new_node == NULL)
+		return 0;
+
+	// TODO: rebalance tree
+	return 1;
+}
