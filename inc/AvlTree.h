@@ -37,7 +37,12 @@ struct AvlNode
 	 */
 	struct AvlNode *right;
 
-	// char balance factor
+	/**
+	 * The balance factor of this node.
+	 *
+	 * balance = <height of right subtree> - <height of left subtree>
+	 */
+	signed char balance;
 };
 
 /**

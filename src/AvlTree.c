@@ -5,6 +5,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 #include "../inc/AvlTree.h"
 
 // TODO: rebalancing!
@@ -21,7 +22,7 @@ int dummyCompare(const void *a, const void *b)
 }
 
 /**
- * Allocates and initializes a new `AvlNode` with a given value and all pointer set to `NULL`.
+ * Allocates and initializes a new `AvlNode` with a given value and all pointers set to `NULL`.
  *
  * @param value The value of the new node.
  * @return Pointer to the newly allocated node, or `NULL` on failure.
@@ -34,12 +35,25 @@ static struct AvlNode *nodeCreate(void *value)
 	if (node == NULL)
 		return NULL;
 
-	node->parent = NULL;
-	node->left = NULL;
-	node->right = NULL;
+	memset(node, 0, sizeof(struct AvlNode));
 	node->value = value;
 
 	return node;
+}
+
+/**
+ * Frees the given node and it's child nodes recursively.
+ *
+ * @param node Points to the node to be freed.
+ */
+static void nodeFree(struct AvlNode *node)
+{
+	if (node == NULL)
+		return;
+
+	nodeFree(node->left);
+	nodeFree(node->right);
+	free(node);
 }
 
 /**
@@ -60,7 +74,7 @@ static struct AvlNode *nodeCreate(void *value)
 static struct AvlNode *nodeSearch(struct AvlTree *tree, void *item, int insert, int *created)
 {
 	// Calls `nodeCreate()` and updates `created`.
-	struct AvlNode *_nodeCreate(void *value)
+	struct AvlNode *createNode(void *value)
 	{
 		struct AvlNode *result = nodeCreate(value);
 
@@ -80,7 +94,7 @@ static struct AvlNode *nodeSearch(struct AvlTree *tree, void *item, int insert, 
 	if (tree->root == NULL)
 	{
 		if (insert)
-			return tree->root = _nodeCreate(item);
+			return tree->root = createNode(item);
 		else
 			return NULL;
 	}
@@ -115,7 +129,7 @@ static struct AvlNode *nodeSearch(struct AvlTree *tree, void *item, int insert, 
 	// insert the new node
 	if (insert)
 	{
-		current = _nodeCreate(item);
+		current = createNode(item);
 
 		if (current != NULL)
 		{
@@ -129,21 +143,6 @@ static struct AvlNode *nodeSearch(struct AvlTree *tree, void *item, int insert, 
 	}
 
 	return current;
-}
-
-/**
- * Frees the given node and it's child nodes recursively.
- *
- * @param node Points to the node to be freed.
- */
-static void nodeFree(struct AvlNode *node)
-{
-	if (node == NULL)
-		return;
-
-	nodeFree(node->left);
-	nodeFree(node->right);
-	free(node);
 }
 
 void avlInit(struct AvlTree *this, int (*compare)(const void *, const void *))
