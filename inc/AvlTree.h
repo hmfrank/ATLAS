@@ -101,16 +101,6 @@ void avlReset(struct AvlTree *_this, int (*compare)(const void *, const void *))
 int avlContains(struct AvlTree *_this, void *item);
 
 /**
- *	Deletes an item from an AVL tree and rebalances the tree.
- *
- * @param _this Points to the tree to remove the item from.
- * @param item The item to remove.
- * @return 1, if the item was successfully removed<br/>
- * 0, if the item was not removed or if `_this` is `NULL`
- */
-int avlDelete(struct AvlTree *_this, void *item);
-
-/**
  * Inserts an item into an AVL tree and rebalances the tree. If the item is already in the tree, nothing happens.
  *
  * @param _this Points to the tree to insert the item in.

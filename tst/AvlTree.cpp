@@ -16,7 +16,6 @@ TEST_CASE("avl tree contains, delete, insert, is empty", "[inc/AvlTree.h/avlCont
 
 	REQUIRE_NOTHROW(avlReset(NULL, NULL));
 	REQUIRE_FALSE(avlContains(NULL, (void*)1));
-	REQUIRE_FALSE(avlDelete(NULL, (void*)1));
 	REQUIRE_FALSE(avlInsert(NULL, (void*)1));
 	REQUIRE(avlIsEmpty(NULL));
 
@@ -32,15 +31,6 @@ TEST_CASE("avl tree contains, delete, insert, is empty", "[inc/AvlTree.h/avlCont
 	REQUIRE_FALSE(avlIsEmpty(&tree));
 	REQUIRE_FALSE(avlInsert(&tree, (void*)2));
 	REQUIRE_FALSE(avlContains(&tree, (void*)-1));
-	REQUIRE_FALSE(avlDelete(&tree, (void*)-2));
-
-	for (int i = 0; i < 10; i++)
-		REQUIRE(avlDelete(&tree, (void*)i));
-
-	REQUIRE(avlIsEmpty(&tree));
-
-	for (int i = 0; i > -10; i--)
-		avlInsert(&tree, (void*)i);
 
 	avlReset(&tree, NULL);
 	REQUIRE(avlIsEmpty(&tree));
