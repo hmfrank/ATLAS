@@ -23,6 +23,11 @@ struct AvlNode
 	void *value;
 
 	/**
+	 * Points to the parent node.
+	 */
+	struct AvlNode *parent;
+
+	/**
 	 * Points to the left child node.
 	 */
 	struct AvlNode *left;
