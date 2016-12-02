@@ -50,11 +50,29 @@ static struct AvlNode *nodeCreate(void *value)
  * @param item The item to search/insert.
  * @param insert This parameter specifies what happens, if the item was not found. If `insert` is `0`, nothing happens.
  * If it's not 0, the item get inserted into the tree.
- * @return `NULL`, if `tree` is `NULL`, or if the item was not found or couldn't be inserted (e.g. due to a malloc error).<br/>
+ * @param created If `created` is `NULL`, it has no effect. If not, a boolean value (false = 0, true = non-zero) is
+ * stored at the location `created` points to. This value tells the caller if a new node was created (true) or not
+ * (false).
+ * @return `NULL`, if `tree` is `NULL`, or if the item was not found or couldn't be inserted (e.g. due to a malloc
+ * error).<br/>
  * Otherwise a pointer to the found/inserted item is returned.
  */
-static struct AvlNode *nodeSearch(struct AvlTree *tree, void *item, int insert)
+static struct AvlNode *nodeSearch(struct AvlTree *tree, void *item, int insert, int *created)
 {
+	// Calls `nodeCreate()` and updates `created`.
+	struct AvlNode *_nodeCreate(void *value)
+	{
+		struct AvlNode *result = nodeCreate(value);
+
+		if (created != NULL)
+			*created = (result != NULL);
+
+		return result;
+	}
+
+	if (created != NULL)
+		*created = 0;
+
 	if (tree == NULL)
 		return NULL;
 
@@ -62,7 +80,7 @@ static struct AvlNode *nodeSearch(struct AvlTree *tree, void *item, int insert)
 	if (tree->root == NULL)
 	{
 		if (insert)
-			return tree->root = nodeCreate(item);
+			return tree->root = _nodeCreate(item);
 		else
 			return NULL;
 	}
@@ -97,7 +115,7 @@ static struct AvlNode *nodeSearch(struct AvlTree *tree, void *item, int insert)
 	// insert the new node
 	if (insert)
 	{
-		current = nodeCreate(item);
+		current = _nodeCreate(item);
 
 		if (current != NULL)
 		{
@@ -147,15 +165,19 @@ void avlFree(struct AvlTree *this)
 
 int avlContains(struct AvlTree *this, void *item)
 {
-	return nodeSearch(this, item, 0) != NULL;
+	return nodeSearch(this, item, 0, NULL) != NULL;
 }
 
 int avlInsert(struct AvlTree *this, void *item)
 {
 	struct AvlNode *new_node;
+	int created;
 
-	new_node = nodeSearch(this, item, 1);
+	new_node = nodeSearch(this, item, 1, &created);
 	if (new_node == NULL)
+		return 0;
+
+	if (!created)
 		return 0;
 
 	// TODO: rebalance tree
