@@ -50,9 +50,9 @@ struct AvlNode
  * Methods of this struct start with "avl".
  *
  * @see https://en.wikipedia.org/wiki/AVL_tree
- * @see avlReset()
+ * @see avlInit()
+ * @see avlFree()
  * @see avlContains()
- * @see avlDelete()
  * @see avlInsert()
  * @see avlIsEmpty()
  */
@@ -74,18 +74,26 @@ struct AvlTree
 };
 
 /**
- * Frees all memory used by the tree itself (not the actual data) and initializes an empty tree.
+ * Initializes an empty tree.
  * If `_this` is `NULL`, nothing happens.
+ * If `compare` is `NULL`, the comparrison function of the tree is set to a dummy function, that always returns 0.
  *
- * You should always call `avlReset()` before and after you use an AVL tree.
- *
- * @param _this Points to the tree that gets resetted.
- * @param compare The comparrison function for the tree. It `compare` is `NULL` the comparrison function of the tree
- * gets initialized to a dummy function, that always returns 0.
+ * @param _this Points to the tree that gets initialized.
+ * @param compare The comparrison function for the tree.
  *
  * @see AvlTree::compare
  */
-void avlReset(struct AvlTree *_this, int (*compare)(const void *, const void *));
+void avlInit(struct AvlTree *_this, int (*compare)(const void *, const void *));
+
+/**
+ * Frees all memory used by the nodes of a tree (not the actual data and not the tree pointer).
+ * If `_this` is `NULL`, nothing happens.
+ *
+ * To prevent memory leaks, you should always call `avlFree()`, when you don't need a tree anymore.
+ *
+ * @param _this Points to the tree to free (this pointer is not freed, only all the nodes of the tree).
+ */
+void avlFree(struct AvlTree *_this);
 
 /**
  * Checks if a tree contains a specific item.

@@ -14,12 +14,21 @@ TEST_CASE("avl tree contains, delete, insert, is empty", "[inc/AvlTree.h/avlCont
 {
 	struct AvlTree tree;
 
-	REQUIRE_NOTHROW(avlReset(NULL, NULL));
-	REQUIRE_FALSE(avlContains(NULL, (void*)1));
-	REQUIRE_FALSE(avlInsert(NULL, (void*)1));
+	// corner case arguments
+	REQUIRE_NOTHROW(avlInit(NULL, NULL));
+	REQUIRE_NOTHROW(avlInit(NULL, compare));
+	avlInit(&tree, NULL);
+	REQUIRE(tree.compare(NULL, NULL) == 0);
+
+	REQUIRE_NOTHROW(avlFree(NULL));
+	avlFree(&tree);
+
+	REQUIRE_FALSE(avlContains(NULL, (void *) 1));
+	REQUIRE_FALSE(avlInsert(NULL, (void *) 1));
 	REQUIRE(avlIsEmpty(NULL));
 
-	avlReset(&tree, &compare);
+	// actual tests
+	avlInit(&tree, &compare);
 	REQUIRE(avlIsEmpty(&tree));
 
 	for (int i = 0; i < 10; i++)
@@ -32,6 +41,5 @@ TEST_CASE("avl tree contains, delete, insert, is empty", "[inc/AvlTree.h/avlCont
 	REQUIRE_FALSE(avlInsert(&tree, (void*)2));
 	REQUIRE_FALSE(avlContains(&tree, (void*)-1));
 
-	avlReset(&tree, NULL);
-	REQUIRE(avlIsEmpty(&tree));
+	avlFree(&tree);
 }

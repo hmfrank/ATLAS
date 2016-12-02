@@ -7,10 +7,14 @@
 #include <stdlib.h>
 #include "../inc/AvlTree.h"
 
-// TODO: implement avlDelete()
-// TODO: implement avlInsert()
+// TODO: rebalancing!
 
-static int dummyCompare(const void *a, const void *b)
+/**
+ * This function is used as comparrison function, is `avlInit()` is passed `NULL` for the argument `compare`.
+ *
+ * @return 0
+ */
+int dummyCompare(const void *a, const void *b)
 {
 	// if I wrote `return 0;` the compiler would complain, because of unused parameters.
 	return a - a + b - b;
@@ -124,14 +128,21 @@ static void nodeFree(struct AvlNode *node)
 	free(node);
 }
 
-void avlReset(struct AvlTree *this, int (*compare)(const void *, const void *))
+void avlInit(struct AvlTree *this, int (*compare)(const void *, const void *))
+{
+	if (this == NULL)
+		return;
+
+	this->root = NULL;
+	this->compare = compare == NULL ? &dummyCompare : compare;
+}
+
+void avlFree(struct AvlTree *this)
 {
 	if (this == NULL)
 		return;
 
 	nodeFree(this->root);
-	this->root = NULL;
-	this->compare = compare == NULL ? &dummyCompare : compare;
 }
 
 int avlContains(struct AvlTree *this, void *item)
