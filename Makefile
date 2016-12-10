@@ -5,10 +5,12 @@ TEST = utest
 
 OBJDIR = bin/
 DOCDIR = doc/
+INCDIR = inc/
 LIBDIR = lib/
 SRCDIR = src/
 TSTDIR = tst/
 
+INC = $(wildcard $(INCDIR)*.h)
 SRC = $(wildcard $(SRCDIR)*.c)
 OBJ = $(SRC:$(SRCDIR)%.c=$(OBJDIR)%.o)
 
@@ -31,13 +33,10 @@ CXX = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra -Werror
 LXXFLAGS =
 
-.PHONY: all doc test clean destroy
+.PHONY: all test clean destroy
 
 
 all: $(EXE)
-
-doc: | $(DOCDIR)
-	doxygen
 
 test: $(TEST)
 
@@ -47,13 +46,18 @@ clean:
 destroy: clean
 	rm -rf $(LIBDIR) $(DOCDIR)
 
+
+# create documentation
+doc: $(SRC) $(INC) | $(DOCDIR)
+	doxygen
+
 # link atlas
 $(EXE): $(OBJ)
 	$(CC) $(CFLAGS) $^ $(LDFLAGS) -o $@
 
 # link unit test
 $(TEST): $(TOBJ)
-	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
+	$(CXX) $(CXXFLAGS) $^ $(LXXFLAGS) -o $@
 
 # .o file
 $(OBJDIR)%.o: $(SRCDIR)%.c | $(OBJDIR)

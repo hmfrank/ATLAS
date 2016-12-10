@@ -23,7 +23,7 @@ installed.
 Deletes all build files (object files and executables).
 
 ### `make destroy`
-Deletes everything make has ever created (includes downloaded libraties and documentation). After running this command,
+Deletes everything make has ever created (includes downloaded libraries and documentation). After running this command,
 your repo should look as if it was freshly cloned from Github.
 
 ## Running ATLAS
