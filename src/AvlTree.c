@@ -8,8 +8,6 @@
 #include <string.h>
 #include "../inc/AvlTree.h"
 
-// TODO: rebalancing!
-
 /**
  * This function is used as comparrison function, is `avlInit()` is passed `NULL` for the argument `compare`.
  *
@@ -39,6 +37,127 @@ static struct AvlNode *nodeCreate(void *value)
 	node->value = value;
 
 	return node;
+}
+
+/**
+ * Performs a rotation around an unbalanced node, to rebalance the tree.
+ *
+ * *NOTE:* this function assumes, that `node` is unbalanced. Calling this function on a balanced node is undefined
+ * behaviour.
+ *
+ * @param node Points to the unbalanced node around which the rotation is performed.
+ * @param tree Points to the tree `node` is in. This is only needed in case `node` is the root of the tree (because the
+ * root is reassigned, then).
+ * @param right Specifies the direction of rotation (0 = left (counterclockwise), non-zero = right (clockwise)).
+ */
+static void nodeRotate(struct AvlNode *node, struct AvlTree *tree, int right)
+{
+	if (node == NULL)
+		return;
+	if (tree == NULL)
+		return;
+
+	// pointer to the parents child field that points to 'node'
+	struct AvlNode **parents_child;
+	// pointer to the child of 'node' that gets rotated up
+	struct AvlNode *child;
+
+	// initialize variables
+	if (node->parent == NULL)
+	{
+		parents_child = &tree->root;
+	}
+	else if (node == node->parent->left)
+	{
+		parents_child = &node->parent->left;
+	}
+	else // if (node == node->parent->right)
+	{
+		parents_child = &node->parent->right;
+	}
+
+	child = right ? node->left : node->right;
+
+	// the next few pointer assignments is the actual rotation process
+	*parents_child = child;
+	child->parent = node->parent;
+
+	if (right)
+	{
+		node->left = child->right;
+		if (child->right != NULL)
+		{
+			child->right->parent = node;
+		}
+
+		child->right = node;
+		node->parent = child;
+	}
+	else
+	{
+		node->right = child->left;
+		if (child->left != NULL)
+		{
+			child->left->parent = node;
+		}
+
+		child->left = node;
+		node->parent = child;
+	}
+
+	// update balance factors
+	signed char child_old_balance = child->balance;
+
+	if (right)
+	{
+		child->balance++;
+		node->balance += -child_old_balance + 1;
+	}
+	else
+	{
+		child->balance--;
+		node->balance += -child_old_balance - 1;
+	}
+}
+
+/**
+ * Brings a node back to balance, if it's not. This is accomplished by performing tree rotations. If the node is already
+ * in balance ( |balance factor| < 2 ), nothing happens.
+ *
+ * @param node Points to the node that might be imbalanced.
+ * @param tree Points to the tree that contains `node`.
+ */
+static void nodeFixBalance(struct AvlNode *node, struct AvlTree *tree)
+{
+	if (node == NULL)
+		return;
+	if (tree == NULL)
+		return;
+
+	// if node is right heavy
+	if (node->balance > 0)
+	{
+		if (node->right->balance < 0)
+		{
+			// rotate right around the right child
+			nodeRotate(node->right, tree, 1);
+		}
+
+		// rotate left
+		nodeRotate(node, tree, 0);
+	}
+	// if node is left heavy
+	else if (node->balance < 0)
+	{
+		if (node->left->balance > 0)
+		{
+			// rotate left aroun left child
+			nodeRotate(node->left, tree, 0);
+		}
+
+		// rotate right
+		nodeRotate(node, tree, 1);
+	}
 }
 
 /**
@@ -145,6 +264,54 @@ static struct AvlNode *nodeSearch(struct AvlTree *tree, void *item, int insert, 
 	return current;
 }
 
+/**
+ * Updates the balance factors of a tree after inserting a node.
+ *
+ * @param node The new inserted node.
+ * @return Pointer to the node that has to be rebalanced or `NULL` if the entire tree is still in balance.
+ */
+struct AvlNode *nodeUpdateBalance(struct AvlNode *node)
+{
+	if (node == NULL)
+		return NULL;
+
+	// go up the tree, as long as we are not root
+	while (node->parent != NULL)
+	{
+		// update the parents balance factor
+		if (node == node->parent->left)
+		{
+			node->parent->balance--;
+		}
+		else // if (node == node->parent->right)
+		{
+			node->parent->balance++;
+		}
+
+		// go up on level (note: we could be at the root node then)
+		node = node->parent;
+
+		if (node->balance == 0)
+		{
+			// the height of this subtree didn't change, so no further balance-factor-updating is needed
+			break;
+		}
+		else if (abs(node->balance) == 2)
+		{
+			// node needs to be rebalanced
+			return node;
+		}
+		else if (abs(node->balance) > 2)
+		{
+			// impossible happened
+			// but try rebalancing anyway
+			return node;
+		}
+	}
+
+	return NULL;
+}
+
 void avlInit(struct AvlTree *this, int (*compare)(const void *, const void *))
 {
 	if (this == NULL)
@@ -169,16 +336,20 @@ int avlContains(struct AvlTree *this, void *item)
 
 int avlInsert(struct AvlTree *this, void *item)
 {
-	struct AvlNode *new_node;
+	struct AvlNode *node;
 	int created;
 
-	new_node = nodeSearch(this, item, 1, &created);
-	if (new_node == NULL)
+	// insert node
+	node = nodeSearch(this, item, 1, &created);
+	if (node == NULL)
 		return 0;
 
 	if (!created)
 		return 0;
 
-	// TODO: rebalance tree
+	// fix balance
+	node = nodeUpdateBalance(node);
+	nodeFixBalance(node, this);
+
 	return 1;
 }
