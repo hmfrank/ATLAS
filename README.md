@@ -15,7 +15,9 @@ Framework_ single header file will be downloaded automatically from
 ### `make doc`
 Creates html documentation. The main page is located in _doc/html/index.html_.
 
-**NOTE:** [_Doxygen_](http://www.stack.nl/~dimitri/doxygen/) has to be installed on your system.
+**NOTE:** [_Doxygen_](http://www.stack.nl/~dimitri/doxygen/) has to be installed on your system. If you want to see
+call- and include-graphs in the generated documentation, you also have to have [_Graphviz_](http://www.graphviz.org/)
+installed.
 
 ### `make clean`
 Deletes all build files (object files and executables).
