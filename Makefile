@@ -10,17 +10,25 @@ LIBDIR = lib/
 SRCDIR = src/
 TSTDIR = tst/
 
-INC = $(wildcard $(INCDIR)*.h)
-SRC = $(wildcard $(SRCDIR)*.c)
-OBJ = $(SRC:$(SRCDIR)%.c=$(OBJDIR)%.o)
+# external sources
+EXT = $(LIBDIR)catch.hpp $(LIBDIR)AvlTree.h $(LIBDIR)AvlTree.c
 
-TST = $(wildcard $(TSTDIR)*.cpp)
-TSRC = $(filter-out $(SRCDIR)main.c, $(SRC))
+# source and object file for main executable
+INC  = $(wildcard $(INCDIR)*.h)
+SRC  = $(wildcard $(SRCDIR)*.c)
+SRC += $(filter %.c, $(EXT))
+OBJ  = $(filter %.o, $(SRC:$(SRCDIR)%.c=$(OBJDIR)%.o))
+OBJ += $(filter %.ol, $(SRC:$(LIBDIR)%.c=$(OBJDIR)%.ol))
+
+# source and object files for unit test executable
+TST   = $(wildcard $(TSTDIR)*.cpp)
+TSRC  = $(filter-out $(SRCDIR)main.c, $(SRC))
 TSRC += $(TST)
-TOBJ = $(filter-out $(OBJDIR)main.o, $(OBJ))
+TOBJ  = $(filter-out $(OBJDIR)main.o, $(OBJ))
 TOBJ += $(TST:$(TSTDIR)%.cpp=$(OBJDIR)%.opp)
 
-DEP = $(SRC:$(SRCDIR)%.c=$(OBJDIR)%.d)
+DEP  = $(filter %.d, $(SRC:$(SRCDIR)%.c=$(OBJDIR)%.d))
+DEP += $(filter %.dl, $(SRC:$(LIBDIR)%.c=$(OBJDIR)%.dl))
 DEP += $(TST:$(TSTDIR)%.cpp=$(OBJDIR)%.dpp)
 
 # C compiler and linker flags
@@ -60,27 +68,44 @@ $(TEST): $(TOBJ)
 	$(CXX) $(CXXFLAGS) $^ $(LXXFLAGS) -o $@
 
 # .o file
-$(OBJDIR)%.o: $(SRCDIR)%.c | $(OBJDIR)
+$(OBJDIR)%.o: $(SRCDIR)%.c $(EXT) | $(OBJDIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# .ol file
+$(OBJDIR)%.ol: $(LIBDIR)%.c $(EXT) | $(OBJDIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # .opp file
-$(OBJDIR)%.opp: $(TSTDIR)%.cpp | $(OBJDIR)
+$(OBJDIR)%.opp: $(TSTDIR)%.cpp $(EXT) | $(OBJDIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 -include $(DEP)
 
 # .d file
-$(OBJDIR)%.d: $(SRCDIR)%.c | $(OBJDIR)
-	$(CC) -MM $< -MT $(subst .d,.o,$@) -MF $@
+$(OBJDIR)%.d: $(SRCDIR)%.c $(EXT) | $(OBJDIR)
+	$(CC) -MM $< -MT $(subst .d,.o,$@) > $@
+
+# .dl file
+$(OBJDIR)%.dl: $(LIBDIR)%.c $(EXT) | $(OBJDIR)
+	$(CC) -MM $< -MT $(subst .dl,.ol,$@) > $@
 
 # .dpp file
-$(OBJDIR)%.dpp: $(TSTDIR)%.cpp | $(OBJDIR)
-	$(CXX) -MM -MG $< -MT $(subst .dpp,.opp,$@) | sed 's/ /\\\n/g' | sed 's/^..\//src\/..\//g' | sed 's/.*\/\.\.\///g' > $@ # regex magic
+$(OBJDIR)%.dpp: $(TSTDIR)%.cpp $(EXT) | $(OBJDIR)
+	$(CXX) -MM $< -MT $(subst .dpp,.opp,$@) > $@
 
 # folders
 $(OBJDIR) $(LIBDIR) $(DOCDIR):
 	mkdir $@
 
-# catch single header file
+
+
+# libraries
 $(LIBDIR)catch.hpp: | $(LIBDIR)
 	wget "https://raw.githubusercontent.com/philsquared/Catch/master/single_include/catch.hpp" -O $@
+
+$(LIBDIR)AvlTree.h: | $(LIBDIR)
+	wget "https://raw.githubusercontent.com/hmfrank/AuD/master/src/AvlTree.h" -O $@
+
+$(LIBDIR)AvlTree.c: | $(LIBDIR)
+	wget "https://raw.githubusercontent.com/hmfrank/AuD/master/src/AvlTree.c" -O $@
+
