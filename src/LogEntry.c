@@ -15,7 +15,6 @@ void lgeFreeStrings(struct LogEntry *this)
 		return;
 
 	if (this->remote_address != NULL) free(this->remote_address);
-	if (this->username != NULL) free(this->username);
 	if (this->requested_file != NULL) free(this->requested_file);
 	if (this->referer != NULL) free(this->referer);
 }

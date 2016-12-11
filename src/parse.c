@@ -83,11 +83,9 @@ int parseLogEntry(FILE *stream, struct LogEntry *result)
 	long long int l;
 	// to temporarily hold the strings
 	char *remote_address;
-	char *username;
 	char *requested_file;
 	char *referer;
 	size_t n_remote_address;
-	size_t n_username;
 	size_t n_requested_file;
 	size_t n_referer;
 
@@ -155,8 +153,8 @@ int parseLogEntry(FILE *stream, struct LogEntry *result)
 	if (end == NULL)
 		return 1;
 	*end = '\0';
-	username = cur;
-	n_username = end - cur;
+	requested_file = cur;
+	n_requested_file = end - cur;
 	cur = end + 1;
 
 	// read http status
@@ -209,15 +207,13 @@ int parseLogEntry(FILE *stream, struct LogEntry *result)
 
 	// alloc memory for the strings
 	result->remote_address = malloc(n_remote_address + 1);
-	result->username = malloc(n_username + 1);
 	result->requested_file = malloc(n_requested_file + 1);
 	result->referer = malloc(n_referer + 1);
 
 	// free memory if at least one malloc failed
-	if (result->remote_address == NULL || result->username == NULL || result->requested_file == NULL || result->referer == NULL)
+	if (result->remote_address == NULL || result->requested_file == NULL || result->referer == NULL)
 	{
 		free(result->remote_address);
-		free(result->username);
 		free(result->requested_file);
 		free(result->referer);
 
@@ -226,7 +222,6 @@ int parseLogEntry(FILE *stream, struct LogEntry *result)
 
 	// copy strings into heap
 	memcpy(result->remote_address, remote_address, n_remote_address + 1);
-	memcpy(result->username, username, n_username + 1);
 	memcpy(result->requested_file, requested_file, n_requested_file + 1);
 	memcpy(result->referer, referer, n_referer + 1);
 

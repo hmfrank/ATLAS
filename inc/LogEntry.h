@@ -47,6 +47,7 @@ struct LogEntry
 	 * The HTTP method used in the client request.
 	 */
 	unsigned short http_method;
+
 	/**
 	 * The HTTP status code of the server response.
 	 */
@@ -56,27 +57,25 @@ struct LogEntry
 	 * The size of the client request in bytes.
 	 */
 	unsigned int request_size;
+
 	/**
 	 * The size of the server response in bytes.
 	 */
 	unsigned int response_size;
+
 
 	/**
 	 * The address of the client.
 	 * This can be an IP address (as string) or a hostname.
 	 */
 	char *remote_address;
-	/**
-	 * The username of the client.
-	 * Only applies if HTTPAuth was used in the request. If not, this field point to some dummy string like `"-"` or
-	 * `""`.
-	 */
-	char *username;
+
 	/**
 	 * The URL path of the requested file.
 	 * Contains no URL parameters.
 	 */
 	char *requested_file;
+
 	/**
 	 * The site the client comes from.
 	 * Most browser send this information with the request, by default. If no referer was sent with the request, this

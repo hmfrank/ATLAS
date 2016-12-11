@@ -70,7 +70,6 @@ TEST_CASE("parse log entry", "[src/parse.c/parseLogEntry]")
 	REQUIRE(entry.request_size == 1112);
 	REQUIRE(entry.response_size == 3757);
 	REQUIRE(strcmp(entry.remote_address, "1.2.3.4") == 0);
-	REQUIRE(strcmp(entry.username, "-") == 0);
 	REQUIRE(strcmp(entry.requested_file, "/index.html") == 0);
 	REQUIRE(strcmp(entry.referer, "/") == 0);
 
@@ -90,7 +89,6 @@ TEST_CASE("parse log entry", "[src/parse.c/parseLogEntry]")
 	REQUIRE(entry.request_size == 4294967295);
 	REQUIRE(entry.response_size == 0);
 	REQUIRE(strcmp(entry.remote_address, "fancy.url.com") == 0);
-	REQUIRE(strcmp(entry.username, "") == 0);
 	REQUIRE(strcmp(entry.requested_file, "/!@$%") == 0);
 	REQUIRE(strcmp(entry.referer, "") == 0);
 
