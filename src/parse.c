@@ -6,7 +6,8 @@
  * @see parse.h
  */
 
-#include <ctype.h>
+// TODO: use regex to parse a normal log format
+
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>

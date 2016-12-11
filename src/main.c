@@ -4,6 +4,9 @@
  * File that contains the main function.
  */
 
+// TODO: let the user choose, which data structure is used to count users
+// TODO: add global counter
+
 #include <search.h>
 #include <stdlib.h>
 #include "../inc/LogStats.h"
