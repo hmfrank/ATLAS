@@ -41,10 +41,13 @@ CXX = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra -Werror
 LXXFLAGS =
 
-.PHONY: all test clean destroy
+.PHONY: all doc test clean destroy
 
 
 all: $(EXE)
+
+doc: | $(DOCDIR)
+	doxygen
 
 test: $(TEST)
 
@@ -54,10 +57,6 @@ clean:
 destroy: clean
 	rm -rf $(LIBDIR) $(DOCDIR)
 
-
-# create documentation
-doc: $(SRC) $(INC) | $(DOCDIR)
-	doxygen
 
 # link atlas
 $(EXE): $(OBJ)
