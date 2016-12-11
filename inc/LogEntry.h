@@ -11,15 +11,21 @@
 
 #include "Date.h"
 
-#define HTTP_CONNECT 1
-#define HTTP_DELETE 2
-#define HTTP_GET 3
-#define HTTP_HEAD 4
-#define HTTP_OPTIONS 5
-#define HTTP_POST 6
-#define HTTP_PUT 7
-#define HTTP_TRACE 8
-#define HTTP_UNKNOWN 0
+/**
+ * Contains all HTTP request methods.
+ */
+enum HttpMethod
+{
+	HTTP_UNKNOWN = 0,
+	HTTP_CONNECT,
+	HTTP_DELETE,
+	HTTP_GET,
+	HTTP_HEAD,
+	HTTP_OPTIONS,
+	HTTP_POST,
+	HTTP_PUT,
+	HTTP_TRACE
+};
 
 /**
  * Represents a single entry in the server log.
