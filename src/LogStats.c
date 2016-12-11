@@ -6,6 +6,8 @@
  * @see LogStats.h
  */
 
+// TODO: day counter in hashtable speichern
+
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
@@ -30,6 +32,11 @@ void lgsDestroy(struct LogStats *this)
 {
 	if (this != NULL)
 	{
+		for (size_t i = 0; i < this->length; i++)
+		{
+			dcFree(this->data + i);
+		}
+
 		free(this);
 	}
 }
@@ -56,8 +63,7 @@ int lgsAddLogEntry(struct LogStats *this, struct LogEntry *entry)
 		if (this->length >= this->capacity)
 			return 2;
 
-		memset(&(this->data[this->length]), 0, sizeof(this->data[0]));
-		this->data[this->length].date = entry->date;
+		dcInit(this->data + this->length, entry->date);
 
 		i = (ssize_t)this->length;
 		this->length++;
@@ -77,7 +83,7 @@ void lgsPrint(struct LogStats *this, FILE *stream)
 		return;
 
 	// print header
-	fprintf(stream, "%10s %10s %10s %10s\n", "DATE", "REQUESTS", "IN", "OUT");
+	fprintf(stream, "%10s %10s %10s %10s %10s\n", "DATE", "REQUESTS", "USERS", "IN", "OUT");
 
 	// print data
 	for (size_t i = 0; i < this->length; i++)
@@ -86,7 +92,7 @@ void lgsPrint(struct LogStats *this, FILE *stream)
 		char str[18];
 
 		dtToString(&counter.date, str);
-		fprintf(stream, "%10s %10u %10llu %10llu\n", str, counter.n_requests, counter.n_bytes_in, counter.n_bytes_out);
+		fprintf(stream, "%10s %10u %10u %10llu %10llu\n", str, counter.n_requests, dcCountUsers(&counter), counter.n_bytes_in, counter.n_bytes_out);
 	}
 }
 

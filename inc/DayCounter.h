@@ -11,19 +11,23 @@
 
 #include "Date.h"
 #include "LogEntry.h"
-
-// TODO: keep track of which user was already added (bloom filter!)
+#include "DistinctCounter.h"
 /**
  * Stores log information about a single day.
  *
+ * You should always call `dcInit()` before and `dcFree()` after using a `DayCounter`.
+ *
  * Methods of this struct start with "dc".
  *
+ * @see dcInit()
+ * @see dcFree()
  * @see dcAddLogEntry()
+ * @see dcCountUsers()
  */
 struct DayCounter
 {
 	/**
-	 * The date this struct sotores information about.
+	 * The date this struct stores information about.
 	 */
 	struct Date date;
 
@@ -31,11 +35,6 @@ struct DayCounter
 	 * Number of requests.
 	 */
 	unsigned int n_requests;
-
-	/**
-	 * Number of users.
-	 */
-	unsigned int n_users;
 
 	/**
 	 * Number of bytes received.
@@ -46,7 +45,28 @@ struct DayCounter
 	 * Number of bytes sent.
 	 */
 	unsigned long long int n_bytes_out;
+
+	/**
+	 * Counter to count the number of unique users.
+	 */
+	struct DistinctCounter user_counter;
 };
+
+/**
+ * Initializes an empty day counter.
+ *
+ * @param this_ Points to the day counter that gets initialized.
+ * @param date The date of the new counter.
+ * @return 0 on success, non-zero on failure.
+ */
+int dcInit(struct DayCounter *this_, struct Date date);
+
+/**
+ * Frees all resources used by a given day counter.
+ *
+ * @param this_ Points to the day counter to be freed.
+ */
+void dcFree(struct DayCounter *this_);
 
 /**
  * Adds some of the information stored in a LogEntry to a DayCounter.
@@ -59,5 +79,13 @@ struct DayCounter
  * @param entry Pointer to the LogEntry to get the information from.
  */
 void dcAddLogEntry(struct DayCounter *this_, struct LogEntry *entry);
+
+/**
+ * Returns the number of unique users that were counted.
+ *
+ * @param this_ Points to the day counter that counted the users.
+ * @return Number of unique users that were counted or `0`, if `this_` is `NULL`.
+ */
+size_t dcCountUsers(struct DayCounter *this_);
 
 #endif //ATLAS_DAYINFO_H

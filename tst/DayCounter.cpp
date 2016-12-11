@@ -11,6 +11,7 @@ TEST_CASE("day counter add log entry", "[src/DayCounter.c/dcAddLogEntry]")
 	struct DayCounter counter;
 	struct LogEntry entry0;
 	struct LogEntry entry1;
+	struct Date date = { .year = 0, .month = 0, .day = 0 };
 	entry0.remote_address = (char*)"127.0.0.1";
 	entry0.request_size = 420;
 	entry0.response_size = 1337;
@@ -18,7 +19,9 @@ TEST_CASE("day counter add log entry", "[src/DayCounter.c/dcAddLogEntry]")
 	entry1.request_size = 12;
 	entry1.response_size = 100;
 
-	memset(&counter, 0, sizeof(struct DayCounter));
+	REQUIRE(dcInit(NULL, date) != 0);
+
+	REQUIRE(dcInit(&counter, date) == 0);
 
 	REQUIRE_NOTHROW(dcAddLogEntry(NULL, NULL));
 	REQUIRE_NOTHROW(dcAddLogEntry(NULL, &entry0));
@@ -27,7 +30,7 @@ TEST_CASE("day counter add log entry", "[src/DayCounter.c/dcAddLogEntry]")
 	dcAddLogEntry(&counter, &entry0);
 
 	REQUIRE(counter.n_requests == 1);
-	// REQUIRE(counter.n_users == 1);
+	REQUIRE(dcCountUsers(&counter) == 1);
 	REQUIRE(counter.n_bytes_in == 420);
 	REQUIRE(counter.n_bytes_out == 1337);
 
@@ -35,7 +38,9 @@ TEST_CASE("day counter add log entry", "[src/DayCounter.c/dcAddLogEntry]")
 	dcAddLogEntry(&counter, &entry0);
 
 	REQUIRE(counter.n_requests == 3);
-	// REQUIRE(counter.n_users == 2);
+	REQUIRE(dcCountUsers(&counter) == 2);
 	REQUIRE(counter.n_bytes_in == 852);
 	REQUIRE(counter.n_bytes_out == 2774);
+
+	REQUIRE_NOTHROW(dcFree(&counter));
 }
