@@ -27,7 +27,7 @@
  * @return Status code with the following meaning:<br>
  * 0 = success<br>
  * -1 = invalid parameter (e.g. `NULL`)<br>
- * 1 = parsing error (wrong format or `EOF` reached)
+ * 1 = parsing error (wrong format or `EOF` reached)<br>
  * 2 = malloc error
  */
 int parseLogEntry(FILE *stream, struct LogEntry *result);

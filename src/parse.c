@@ -6,9 +6,8 @@
  * @see parse.h
  */
 
-// TODO: use regex to parse a normal log format
-
 #include <limits.h>
+#include <regex.h>
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
@@ -68,6 +67,7 @@ unsigned char toMonth(const char *str)
 	else return 0;
 }
 
+// TODO: remove duplicates
 int parseLogEntry(FILE *stream, struct LogEntry *result)
 {
 	if (stream == NULL)
@@ -75,156 +75,150 @@ int parseLogEntry(FILE *stream, struct LogEntry *result)
 	if (result == NULL)
 		return -1;
 
-	// line buffer
 	char buffer[PARSER_LINEBUFFER_SIZE];
-	// pointer to the current position in buffer
-	char *cur = buffer;
-	char *end;
-	// general purpose variables
+	char *ptr;
 	long long int l;
-	// to temporarily hold the strings
+
 	char *remote_address;
 	char *requested_file;
 	char *referer;
-	size_t n_remote_address;
-	size_t n_requested_file;
-	size_t n_referer;
 
 	// read line into buffer
 	if (fgets(buffer, PARSER_LINEBUFFER_SIZE, stream) == NULL)
 		return 1;
 
 	// check if buffer was long enough
-	end = strchr(buffer, '\n');
-	if (end == NULL && strlen(buffer) >= PARSER_LINEBUFFER_SIZE - 1)
+	ptr = strchr(buffer, '\n');
+	if (ptr == NULL && strlen(buffer) >= PARSER_LINEBUFFER_SIZE - 1)
 		return 1;
-	else if (end != NULL)
-		*end = '\0';
+	else if (ptr != NULL)
+		*ptr = '\0';
 
-	// start parsing
-	if (*(cur++) != '[')
+	// parse remote address
+	remote_address = strtok(buffer, " ");
+	if (remote_address == NULL)
 		return 1;
 
-	// read day
-	l = strtol(cur, &cur, 10);
-	if (l < 0 || l > 31)
+	// parse HTTP-Auth user
+	if (strtok(NULL, " ") == NULL)
 		return 1;
+
+	// parse day
+	ptr = strtok(NULL, "/");
+	if (ptr == NULL)
+		return 1;
+	if (*(ptr++) != '[')
+		return 1;
+
+	l = strtoll(ptr, &ptr, 10);
+	if (*ptr != '\0')
+		return 1;
+	if (l < 1 || l > 31)
+		return 1;
+
 	result->date.day = (unsigned char)l;
 
-	if (*(cur++) != '/')
+	// parse month
+	ptr = strtok(NULL, "/");
+	if (ptr == NULL)
 		return 1;
 
-	// read month
-	end = strchr(cur, '/');
-	if (end == NULL)
+	result->date.month = toMonth(ptr);
+	if (result->date.month == 0)
 		return 1;
-	*end = '\0';
-	l = (long long int)toMonth(cur);
-	if (l < 1 || l > 12)
-		return 1;
-	result->date.month = (unsigned char)l;
-	cur = end + 1;
 
-	// read year
-	l = strtol(cur, &cur, 10);
+	// parse year
+	ptr = strtok(NULL, ":");
+	if (ptr == NULL)
+		return 1;
+
+	l = strtoll(ptr, &ptr, 10);
+	if (*ptr != '\0')
+		return 1;
 	if (l < 0 || l > 9999)
 		return 1;
 	result->date.year = (unsigned short)l;
 
 	// ignore time
-	for (; *cur != ']' && *cur != '\0'; cur++)
-	{ }
-
-	if (*(cur++) != ']')
-		return 1;
-	if (*(cur++) != '#')
+	if (strtok(NULL, "]") == NULL)
 		return 1;
 
-	// read remote address
-	end = strchr(cur, '#');
-	if (end == NULL)
+	// parse HTTP method
+	ptr = strtok(NULL, " ");
+	if (ptr == NULL)
 		return 1;
-	*end = '\0';
-	remote_address = cur;
-	n_remote_address = end - cur;
-	cur = end + 1;
 
-	// read username
-	end = strchr(cur, '#');
-	if (end == NULL)
+	result->http_method = toHttpMethod(ptr);
+
+	// parse HTTP status
+	ptr = strtok(NULL, " ");
+	if (ptr == NULL)
 		return 1;
-	*end = '\0';
-	requested_file = cur;
-	n_requested_file = end - cur;
-	cur = end + 1;
 
-	// read http status
-	l = strtol(cur, &cur, 10);
-	if (l < 0 || l > 999)
+	l = strtoll(ptr, &ptr, 10);
+	if (*ptr != '\0')
+		return 1;
+	if (l < 0 || l > 9999)
 		return 1;
 	result->http_status = (unsigned short)l;
 
-	if (*(cur++) != '#')
+	// parse request size
+	ptr = strtok(NULL, " ");
+	if (ptr == NULL)
 		return 1;
 
-	// read request size
-	l = strtoll(cur, &cur, 10);
-	if (l < 0 || l > (long long int)UINT_MAX)
+	l = strtoll(ptr, &ptr, 10);
+	if (*ptr != '\0')
+		return 1;
+	if (l < 0)
 		return 1;
 	result->request_size = (unsigned int)l;
 
-	if (*(cur++) != '#')
+	// parse response size
+	ptr = strtok(NULL, " ");
+	if (ptr == NULL)
 		return 1;
 
-	// read response size
-	l = strtoll(cur, &cur, 10);
-	if (l < 0 || l > (long long int)UINT_MAX)
+	l = strtoll(ptr, &ptr, 10);
+	if (*ptr != '\0')
+		return 1;
+	if (l < 0)
 		return 1;
 	result->response_size = (unsigned int)l;
 
-	if (*(cur++) != '#')
+	// parse requested file
+	requested_file = strtok(NULL, "\"");
+	if (requested_file == NULL)
 		return 1;
 
-	// read requested file
-	end = strchr(cur, '#');
-	if (end == NULL)
+	// parse referer
+	if (strtok(NULL, "\"") == NULL)
 		return 1;
-	*end = '\0';
-	requested_file = cur;
-	n_requested_file = end - cur;
-	cur = end + 1;
 
-	// read referer
-	end = strchr(cur, '#');
-	if (end == NULL)
+	referer = strtok(NULL, "\"");
+	if (referer == NULL)
 		return 1;
-	*end = '\0';
-	referer = cur;
-	n_referer = end - cur;
-	cur = end + 1;
 
-	// read HTTP method
-	result->http_method = toHttpMethod(cur);
+	// allocate memory for the strings
+	result->remote_address = malloc(strlen(remote_address) + 1);
+	result->requested_file = malloc(strlen(requested_file) + 1);
+	result->referer = malloc(strlen(referer) + 1);
 
-	// alloc memory for the strings
-	result->remote_address = malloc(n_remote_address + 1);
-	result->requested_file = malloc(n_requested_file + 1);
-	result->referer = malloc(n_referer + 1);
-
-	// free memory if at least one malloc failed
 	if (result->remote_address == NULL || result->requested_file == NULL || result->referer == NULL)
 	{
-		free(result->remote_address);
-		free(result->requested_file);
-		free(result->referer);
+		if (result->remote_address != NULL)
+			free(result->remote_address);
+		if (result->requested_file != NULL)
+			free(result->requested_file);
+		if (result->referer != NULL)
+			free(result->referer);
 
 		return 2;
 	}
 
-	// copy strings into heap
-	memcpy(result->remote_address, remote_address, n_remote_address + 1);
-	memcpy(result->requested_file, requested_file, n_requested_file + 1);
-	memcpy(result->referer, referer, n_referer + 1);
+	strcpy(result->remote_address, remote_address);
+	strcpy(result->requested_file, requested_file);
+	strcpy(result->referer, referer);
 
 	return 0;
 }
