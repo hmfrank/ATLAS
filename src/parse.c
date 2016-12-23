@@ -170,7 +170,7 @@ int parseLogEntry(FILE *stream, struct LogEntry *result)
 	l = strtoll(ptr, &ptr, 10);
 	if (*ptr != '\0')
 		return 1;
-	if (l < 0)
+	if (l < 0 || l > UINT_MAX)
 		return 1;
 	result->request_size = (unsigned int)l;
 
@@ -182,7 +182,7 @@ int parseLogEntry(FILE *stream, struct LogEntry *result)
 	l = strtoll(ptr, &ptr, 10);
 	if (*ptr != '\0')
 		return 1;
-	if (l < 0)
+	if (l < 0 || l > UINT_MAX)
 		return 1;
 	result->response_size = (unsigned int)l;
 
