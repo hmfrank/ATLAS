@@ -31,7 +31,7 @@ To use ATLAS, simply pipe your log file into stdin like this: `./atlas < mylogfi
 requests and the number of bytes sent and received for each day.
 
 ## Log Format
-If you're using the Apache web server, this format will work: `%t#%h#%u#%s#%I#%O#%U#%{Referer}i#%m`. There is a more
-detailed specification in the documentation of `parseLogEntry()`.
+If you're using the Apache web server, this format will work: `%%h %%u %%t %%m %%s %%I %%O "%U" "%{Referer}i"`. If you
+want a more detailed specification, you have to take a look at the source code of `parseLogEntry()`.
 
 _Version_ 0.3.0
