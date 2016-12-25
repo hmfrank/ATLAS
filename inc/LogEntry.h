@@ -34,6 +34,7 @@ enum HttpMethod
  *
  * Methods of this struct start with "lge".
  *
+ * @see lgeEquals()
  * @see lgeFreeStrings()
  */
 struct LogEntry
@@ -83,6 +84,15 @@ struct LogEntry
 	 */
 	const char *referer;
 };
+
+/**
+ * Checks, if the two given log entries are equal or not.
+ *
+ * @param a Points to the first log entry.
+ * @param b Points to the second log entry.
+ * @return Non-zero, if the log entries are equal, 0 otherwise.
+ */
+int lgeEquals(struct LogEntry *a, struct LogEntry *b);
 
 /**
  * Frees all the strings in a LogEntry.
