@@ -9,7 +9,6 @@
  * @see DayCounter.c
  */
 
-#include "Date.h"
 #include "LogEntry.h"
 #include "DistinctCounter.h"
 /**
@@ -26,11 +25,6 @@
  */
 struct DayCounter
 {
-	/**
-	 * The date this struct stores information about.
-	 */
-	struct Date date;
-
 	/**
 	 * Number of requests.
 	 */
@@ -59,7 +53,7 @@ struct DayCounter
  * @param date The date of the new counter.
  * @return 0 on success, non-zero on failure.
  */
-int dcInit(struct DayCounter *this_, struct Date date);
+int dcInit(struct DayCounter *this_);
 
 /**
  * Frees all resources used by a given day counter.

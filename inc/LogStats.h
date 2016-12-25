@@ -9,7 +9,6 @@
 
 #include <search.h>
 #include <stdio.h>
-#include "Date.h"
 #include "DayCounter.h"
 #include "LogEntry.h"
 

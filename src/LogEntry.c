@@ -40,7 +40,7 @@ int lgeEquals(struct LogEntry *a, struct LogEntry *b)
 		}
 	}
 
-	return dtCompare(&a->date, &b->date) == 0 &&
+	return strcmp(a->date, b->date) == 0 &&
         a->http_method == b->http_method &&
         a->http_status == b->http_status &&
         a->request_size == b->request_size &&

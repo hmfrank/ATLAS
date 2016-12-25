@@ -9,8 +9,6 @@
  * @see LogEntry.c
  */
 
-#include "Date.h"
-
 /**
  * Contains all HTTP request methods.
  */
@@ -40,9 +38,9 @@ enum HttpMethod
 struct LogEntry
 {
 	/**
-	 * The date the request was made.
+	 * A string that represents the date the request was made (Format: YYYYMMDD).
 	 */
-	struct Date date;
+	char date[9];
 
 	/**
 	 * The HTTP method used in the client request.

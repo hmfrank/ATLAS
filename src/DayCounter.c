@@ -8,7 +8,6 @@
 
 #include <string.h>
 #include "../inc/DayCounter.h"
-#include "../inc/DistinctCounter.h"
 
 int strCompare(const void *a, const void *b)
 {
@@ -22,7 +21,7 @@ int strCompare(const void *a, const void *b)
 	return strcmp((const char *)a, (const char *)b);
 }
 
-int dcInit(struct DayCounter *this, struct Date date)
+int dcInit(struct DayCounter *this)
 {
 	if (this == NULL)
 		return 1;
@@ -31,7 +30,6 @@ int dcInit(struct DayCounter *this, struct Date date)
 	counter_init_info.avl_tree.compare = &strCompare;
 
 	memset(this, 0, sizeof(struct DayCounter));
-	this->date = date;
 	return dstInit(&this->user_counter, AVL_TREE, &counter_init_info);
 }
 
