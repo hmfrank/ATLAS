@@ -53,7 +53,7 @@ void dcAddLogEntry(struct DayCounter *this, struct LogEntry *entry)
 	this->n_requests++;
 	this->n_bytes_in += entry->request_size;
 	this->n_bytes_out += entry->response_size;
-	dstAdd(&this->user_counter, entry->remote_address);
+	dstAdd(&this->user_counter, (void*)entry->remote_address);
 }
 
 size_t dcCountUsers(struct DayCounter *this_)

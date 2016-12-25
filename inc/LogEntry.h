@@ -68,20 +68,20 @@ struct LogEntry
 	 * The address of the client.
 	 * This can be an IP address (as string) or a hostname.
 	 */
-	char *remote_address;
+	const char *remote_address;
 
 	/**
 	 * The URL path of the requested file.
 	 * Contains no URL parameters.
 	 */
-	char *requested_file;
+	const char *requested_file;
 
 	/**
 	 * The site the client comes from.
 	 * Most browser send this information with the request, by default. If no referer was sent with the request, this
 	 * field can point to some dummy strin like `"-"` or `""`.
 	 */
-	char *referer;
+	const char *referer;
 };
 
 /**

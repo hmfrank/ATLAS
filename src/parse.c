@@ -79,9 +79,9 @@ int parseLogEntry(FILE *stream, struct LogEntry *result)
 	char *ptr;
 	long long int l;
 
-	char *remote_address;
-	char *requested_file;
-	char *referer;
+	const char *remote_address;
+	const char *requested_file;
+	const char *referer;
 
 	// read line into buffer
 	if (fgets(buffer, PARSER_LINEBUFFER_SIZE, stream) == NULL)
@@ -207,18 +207,18 @@ int parseLogEntry(FILE *stream, struct LogEntry *result)
 	if (result->remote_address == NULL || result->requested_file == NULL || result->referer == NULL)
 	{
 		if (result->remote_address != NULL)
-			free(result->remote_address);
+			free((char*)result->remote_address);
 		if (result->requested_file != NULL)
-			free(result->requested_file);
+			free((char*)result->requested_file);
 		if (result->referer != NULL)
-			free(result->referer);
+			free((char*)result->referer);
 
 		return 2;
 	}
 
-	strcpy(result->remote_address, remote_address);
-	strcpy(result->requested_file, requested_file);
-	strcpy(result->referer, referer);
+	strcpy((char*)result->remote_address, remote_address);
+	strcpy((char*)result->requested_file, requested_file);
+	strcpy((char*)result->referer, referer);
 
 	return 0;
 }
