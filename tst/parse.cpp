@@ -8,8 +8,6 @@ extern unsigned short toHttpMethod(const char *str);
 extern unsigned char toMonth(const char *str);
 }
 
-// TODO: more tests for parseLogEntry()
-
 TEST_CASE("to HTTP method", "[src/parse.c/toHttpMethod]")
 {
 	REQUIRE(toHttpMethod(NULL) == HTTP_UNKNOWN);
@@ -46,61 +44,100 @@ TEST_CASE("to month", "[src/parse.c/toMonth]")
 	REQUIRE(toMonth("") == 0);
 }
 
-// TODO: test too long input
+const char *createTooLongInput()
+{
+	static char too_long[1025];
+	const char *str = "12.34.56.78 - [23/Dec/2016:18:36:27 +0000] GET 200 394 992 \"/public/\" \"-\"";
+
+	memset(too_long, ' ', 1025);
+	too_long[1024] = '\0';
+
+	strcpy(too_long, str);
+	too_long[strlen(str)] = ' ';
+
+	return too_long;
+}
+
 TEST_CASE("parse log entry", "[src/parse.c/parseLogEntry]")
 {
+	struct TestDataRecord
+	{
+		// input string
+		const char *input;
+
+		// expected return value
+		int expected;
+
+		// expected result
+		struct LogEntry result;
+	};
+
+	struct LogEntry dummy;
+
+	struct TestDataRecord data[] = {
+		{
+			.input = "12.34.56.78 - [23/Dec/2016:18:36:27 +0000] GET 200 394 992 \"/public/\" \"-\"",
+			.expected = 0,
+			.result = { .date = { .year = 2016, .month = 12, .day = 23}, .http_method = HTTP_GET, .http_status = 200,
+					.request_size = 394, .response_size = 992, .remote_address = "12.34.56.78",
+					.requested_file = "/public/", .referer = "-" }
+		},
+		{
+			.input = "fancy.url.com !@#$ [12/mAR/9999:4:2:0 +1337] %^&* 999 4294967295 0 \"-\" \"https://example.com/\"",
+			.expected = 0,
+			.result = { .date = { .year = 9999, .month = 3, .day = 12 }, .http_method = HTTP_UNKNOWN, .http_status = 999,
+					.request_size = 4294967295, .response_size = 0, .remote_address = "fancy.url.com",
+					.requested_file = "-", .referer = "https://example.com/" }
+		},
+		{
+			.input = "8.8.8.8 mike [3/Oct/10000:4:2:0 +1337] GET 200 257 2395 \"index.html\" \"-\"",
+			.expected = 1,
+			.result = dummy
+		},
+		{
+			.input = "abc - [32/jan/2000:12:00:00 + 1000] GET 200 257 2395 \"index.html\" \"-\"",
+			.expected  = 1,
+			.result = dummy
+		},
+		{
+			.input = "1.2.3.4 - [1/jan/2000:12:00:00 + 1000] GET 200 25 \"index.html\" \"-\"",
+			.expected  = 1,
+			.result = dummy
+		},
+		{
+			.input = "1.2.3.4 - [1/jan/2000:12:00:00 + 1000] GET 200 one 1337 \"index.html\" \"-\"",
+			.expected  = 1,
+			.result = dummy
+		},
+		{
+			.input = createTooLongInput(),
+			.expected  = 1,
+			.result = dummy
+		}
+	};
+
 	struct LogEntry entry;
 	FILE *file;
 
-	// normal log line
-	const char *s0 = "12.34.56.78 - [23/Dec/2016:18:36:27 +0000] GET 200 394 992 \"/public/\" \"-\"";
-	file = fmemopen((char*)s0, strlen(s0), "r");
+	for (size_t i = 0; i < sizeof(data) / sizeof(*data); i++)
+	{
+		struct TestDataRecord *test_data = data + i;
 
-	REQUIRE(parseLogEntry(file, NULL) == -1);
+		file = fmemopen((char*)test_data->input, strlen(test_data->input), "r");
+		REQUIRE(file != NULL);
+
+		if (i == 0)
+			REQUIRE(parseLogEntry(file, NULL) == -1);
+
+		REQUIRE(parseLogEntry(file, &entry) == test_data->expected);
+
+		if (test_data->expected == 0)
+			REQUIRE(lgeEquals(&entry, &test_data->result));
+
+		fclose(file);
+	}
+
 	REQUIRE(parseLogEntry(NULL, &entry) == -1);
 	REQUIRE(parseLogEntry(NULL, NULL) == -1);
-
-	REQUIRE(parseLogEntry(file, &entry) == 0);
-	REQUIRE(entry.date.day == 23);
-	REQUIRE(entry.date.month == 12);
-	REQUIRE(entry.date.year == 2016);
-	REQUIRE(entry.http_method == HTTP_GET);
-	REQUIRE(entry.http_status == 200);
-	REQUIRE(entry.request_size == 394);
-	REQUIRE(entry.response_size == 992);
-	REQUIRE(strcmp(entry.remote_address, "12.34.56.78") == 0);
-	REQUIRE(strcmp(entry.requested_file, "/public/") == 0);
-	REQUIRE(strcmp(entry.referer, "-") == 0);
-
-	lgeFreeStrings(&entry);
-	fclose(file);
-
-	// very strange but still valid log line
-	const char *s1 = "fancy.url.com !@#$ [12/mAR/9999:4:2:0 +1337] %^&* 999 4294967295 0 \"-\" \"https://example.com/\"";
-	file = fmemopen((char*)s1, strlen(s1), "r");
-
-	REQUIRE(parseLogEntry(file, &entry) == 0);
-	REQUIRE(entry.date.day == 12);
-	REQUIRE(entry.date.month == 3);
-	REQUIRE(entry.date.year == 9999);
-	REQUIRE(entry.http_method == HTTP_UNKNOWN);
-	REQUIRE(entry.http_status == 999);
-	REQUIRE(entry.request_size == 4294967295);
-	REQUIRE(entry.response_size == 0);
-	REQUIRE(strcmp(entry.remote_address, "fancy.url.com") == 0);
-	REQUIRE(strcmp(entry.requested_file, "-") == 0);
-	REQUIRE(strcmp(entry.referer, "https://example.com/") == 0);
-
-	lgeFreeStrings(&entry);
-	fclose(file);
-
-	// invalid format (year >= 10000)
-	//const char *s2 = "[3/Oct/10000:4:2:0 +1337]#8.8.8.8#mike#200#257#2395#/index.html##GET";
-	const char *s2 = "8.8.8.8 mike [3/Oct/10000:4:2:0 +1337] GET 200 257 2395 \"index.html\" \"-\"";
-	file = fmemopen((char*)s2, strlen(s2), "r");
-
-	REQUIRE(parseLogEntry(file, &entry) == 1);
-
-	fclose(file);
 }
 

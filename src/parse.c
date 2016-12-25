@@ -67,7 +67,6 @@ unsigned char toMonth(const char *str)
 	else return 0;
 }
 
-// TODO: remove duplicates
 int parseLogEntry(FILE *stream, struct LogEntry *result)
 {
 	if (stream == NULL)
