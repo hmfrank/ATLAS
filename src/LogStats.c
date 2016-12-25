@@ -34,7 +34,7 @@ void lgsDestroy(struct LogStats *this)
 	{
 		for (size_t i = 0; i < this->length; i++)
 		{
-			dcFree(this->data + i);
+			ctrFree(this->data + i);
 		}
 
 		free(this);
@@ -63,14 +63,14 @@ int lgsAddLogEntry(struct LogStats *this, struct LogEntry *entry)
 		if (this->length >= this->capacity)
 			return 2;
 
-		dcInit(this->data + this->length, entry->date);
+		ctrInit(this->data + this->length, entry->date);
 
 		i = (ssize_t)this->length;
 		this->length++;
 	}
 
 	// add information to the entry
-	dcAddLogEntry(this->data + i, entry);
+	ctrAddLogEntry(this->data + i, entry);
 
 	return 0;
 }
@@ -88,11 +88,11 @@ void lgsPrint(struct LogStats *this, FILE *stream)
 	// print data
 	for (size_t i = 0; i < this->length; i++)
 	{
-		struct DayCounter counter = this->data[i];
+		struct Counter counter = this->data[i];
 		char str[18];
 
 		dtToString(&counter.date, str);
-		fprintf(stream, "%10s %10u %10u %10llu %10llu\n", str, counter.n_requests, dcCountUsers(&counter), counter.n_bytes_in, counter.n_bytes_out);
+		fprintf(stream, "%10s %10u %10u %10llu %10llu\n", str, counter.n_requests, ctrCountUsers(&counter), counter.n_bytes_in, counter.n_bytes_out);
 	}
 }
 
@@ -103,7 +103,7 @@ void lgsSort(struct LogStats *this)
 
 	int compare(const void *x, const void *y)
 	{
-		return dtCompare(&((struct DayCounter *)x)->date, &((struct DayCounter *)y)->date);
+		return dtCompare(&((struct Counter *)x)->date, &((struct Counter *)y)->date);
 	}
 
 	qsort(this->data, this->length, sizeof(this->data[0]), compare);

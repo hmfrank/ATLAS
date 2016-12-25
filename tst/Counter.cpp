@@ -3,12 +3,12 @@
 
 extern "C"
 {
-#include "../inc/DayCounter.h"
+#include "../inc/Counter.h"
 }
 
-TEST_CASE("day counter add log entry", "[src/DayCounter.c/dcAddLogEntry]")
+TEST_CASE("day counter add log entry", "[src/Counter.c/ctrAddLogEntry]")
 {
-	struct DayCounter counter;
+	struct Counter counter;
 	struct LogEntry entry0;
 	struct LogEntry entry1;
 	struct Date date = { .year = 0, .month = 0, .day = 0 };
@@ -19,28 +19,28 @@ TEST_CASE("day counter add log entry", "[src/DayCounter.c/dcAddLogEntry]")
 	entry1.request_size = 12;
 	entry1.response_size = 100;
 
-	REQUIRE(dcInit(NULL, date) != 0);
+	REQUIRE(ctrInit(NULL, date) != 0);
 
-	REQUIRE(dcInit(&counter, date) == 0);
+	REQUIRE(ctrInit(&counter, date) == 0);
 
-	REQUIRE_NOTHROW(dcAddLogEntry(NULL, NULL));
-	REQUIRE_NOTHROW(dcAddLogEntry(NULL, &entry0));
-	REQUIRE_NOTHROW(dcAddLogEntry(&counter, NULL));
+	REQUIRE_NOTHROW(ctrAddLogEntry(NULL, NULL));
+	REQUIRE_NOTHROW(ctrAddLogEntry(NULL, &entry0));
+	REQUIRE_NOTHROW(ctrAddLogEntry(&counter, NULL));
 
-	dcAddLogEntry(&counter, &entry0);
+	ctrAddLogEntry(&counter, &entry0);
 
 	REQUIRE(counter.n_requests == 1);
-	REQUIRE(dcCountUsers(&counter) == 1);
+	REQUIRE(ctrCountUsers(&counter) == 1);
 	REQUIRE(counter.n_bytes_in == 420);
 	REQUIRE(counter.n_bytes_out == 1337);
 
-	dcAddLogEntry(&counter, &entry1);
-	dcAddLogEntry(&counter, &entry0);
+	ctrAddLogEntry(&counter, &entry1);
+	ctrAddLogEntry(&counter, &entry0);
 
 	REQUIRE(counter.n_requests == 3);
-	REQUIRE(dcCountUsers(&counter) == 2);
+	REQUIRE(ctrCountUsers(&counter) == 2);
 	REQUIRE(counter.n_bytes_in == 852);
 	REQUIRE(counter.n_bytes_out == 2774);
 
-	REQUIRE_NOTHROW(dcFree(&counter));
+	REQUIRE_NOTHROW(ctrFree(&counter));
 }

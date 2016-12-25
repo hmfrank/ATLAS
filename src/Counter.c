@@ -1,13 +1,13 @@
 /**
- * @file DayCounter.c
+ * @file Counter.c
  *
- * Contains implementations of the functions defined in DayCounter.h.
+ * Contains implementations of the functions defined in Counter.h.
  *
- * @see DayCounter.h
+ * @see Counter.h
  */
 
 #include <string.h>
-#include "../inc/DayCounter.h"
+#include "../inc/Counter.h"
 
 int strCompare(const void *a, const void *b)
 {
@@ -21,7 +21,7 @@ int strCompare(const void *a, const void *b)
 	return strcmp((const char *)a, (const char *)b);
 }
 
-int dcInit(struct DayCounter *this)
+int ctrInit(struct Counter *this)
 {
 	if (this == NULL)
 		return 1;
@@ -29,11 +29,11 @@ int dcInit(struct DayCounter *this)
 	union DstInitInfo counter_init_info;
 	counter_init_info.avl_tree.compare = &strCompare;
 
-	memset(this, 0, sizeof(struct DayCounter));
+	memset(this, 0, sizeof(struct Counter));
 	return dstInit(&this->user_counter, AVL_TREE, &counter_init_info);
 }
 
-void dcFree(struct DayCounter *this)
+void ctrFree(struct Counter *this)
 {
 	if (this == NULL)
 		return;
@@ -41,7 +41,7 @@ void dcFree(struct DayCounter *this)
 	dstFree(&this->user_counter);
 }
 
-void dcAddLogEntry(struct DayCounter *this, struct LogEntry *entry)
+void ctrAddLogEntry(struct Counter *this, struct LogEntry *entry)
 {
 	if (this == NULL)
 		return;
@@ -54,7 +54,7 @@ void dcAddLogEntry(struct DayCounter *this, struct LogEntry *entry)
 	dstAdd(&this->user_counter, (void*)entry->remote_address);
 }
 
-size_t dcCountUsers(struct DayCounter *this_)
+size_t ctrCountUsers(struct Counter *this_)
 {
 	return this_ == NULL ? 0 : dstCount(&this_->user_counter);
 }

@@ -9,12 +9,12 @@
 
 #include <search.h>
 #include <stdio.h>
-#include "DayCounter.h"
+#include "Counter.h"
 #include "LogEntry.h"
 
 /**
- * Stores statistical information about an entire log file. Basically it's just an array of `struct DayCounter`, where
- * one `DayCounter` is stored for each day in the log.
+ * Stores statistical information about an entire log file. Basically it's just an array of `struct Counter`, where
+ * one `Counter` is stored for each day in the log.
  *
  * You should only create instances of `LogStats` using `lgsCreate()` and when you don't need them anymore, pass them to
  * `lgsDestroy()`.
@@ -42,7 +42,7 @@ struct LogStats
 	/**
 	 * Points to the first element of the array (which is stored right behind the atucal struct in memory).
 	 */
-	struct DayCounter data[0];
+	struct Counter data[0];
 };
 
 /**
