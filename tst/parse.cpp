@@ -5,7 +5,7 @@ extern "C"
 {
 #include "../inc/parse.h"
 extern unsigned short toHttpMethod(const char *str);
-extern unsigned char toMonth(const char *str);
+extern long toMonth(const char *str);
 }
 
 TEST_CASE("to HTTP method", "[src/parse.c/toHttpMethod]")
