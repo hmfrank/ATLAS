@@ -7,9 +7,8 @@ extern "C"
 
 TEST_CASE("log entry equals", "[src/LogEntry.c/lgeEquals]")
 {
-	struct LogEntry e0 = { .date = { .year = 2016, .month = 12, .day = 23}, .http_method = HTTP_GET, .http_status = 200,
-		.request_size = 394, .response_size = 993, .remote_address = "12.34.56.78",
-		.requested_file = "/public/", .referer = "-" };
+	struct LogEntry e0 = { .date = "20161223", .http_method = HTTP_GET, .http_status = 200, .request_size = 394,
+			.response_size = 993, .remote_address = "12.34.56.78", .requested_file = "/public/", .referer = "-" };
 	struct LogEntry e1 = e0;
 
 	REQUIRE(lgeEquals(NULL, NULL));

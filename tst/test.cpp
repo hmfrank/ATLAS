@@ -6,14 +6,10 @@
 
 TEST_CASE("architecture tests", "[architecture]")
 {
-	// for day in struct Date
-	REQUIRE(UCHAR_MAX >= 31);
-	// for year in struct Date
 	// for http_method in struct LogEntry
-	REQUIRE(USHRT_MAX >= 9999);
-	// for implementation of dtToNewString
-	REQUIRE(USHRT_MAX <= 99999);
-	REQUIRE(UCHAR_MAX <= 99999);
-	// for implementation of parseLogEntry
+	REQUIRE(USHRT_MAX >= 999);
+	// for implementation of parseLogEntry()
+	REQUIRE(LONG_MAX >= 9999);
+	// for implementation of parseLogEntry()
 	REQUIRE(UINT_MAX <= LLONG_MAX);
 }

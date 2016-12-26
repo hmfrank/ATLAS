@@ -55,7 +55,7 @@ struct Counter
 int ctrInit(struct Counter *this_);
 
 /**
- * Frees all resources used by a given counter.
+ * Frees all resources used by a given counter. If `this_` is `NULL`, nothing happens.
  *
  * @param this_ Points to the counter to be freed.
  */

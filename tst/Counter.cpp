@@ -11,7 +11,6 @@ TEST_CASE("day counter add log entry", "[src/Counter.c/ctrAddLogEntry]")
 	struct Counter counter;
 	struct LogEntry entry0;
 	struct LogEntry entry1;
-	struct Date date = { .year = 0, .month = 0, .day = 0 };
 	entry0.remote_address = (char*)"127.0.0.1";
 	entry0.request_size = 420;
 	entry0.response_size = 1337;
@@ -19,9 +18,9 @@ TEST_CASE("day counter add log entry", "[src/Counter.c/ctrAddLogEntry]")
 	entry1.request_size = 12;
 	entry1.response_size = 100;
 
-	REQUIRE(ctrInit(NULL, date) != 0);
+	REQUIRE(ctrInit(NULL) != 0);
 
-	REQUIRE(ctrInit(&counter, date) == 0);
+	REQUIRE(ctrInit(&counter) == 0);
 
 	REQUIRE_NOTHROW(ctrAddLogEntry(NULL, NULL));
 	REQUIRE_NOTHROW(ctrAddLogEntry(NULL, &entry0));

@@ -6,22 +6,38 @@
  * @see LogStats.h
  */
 
-// TODO: day counter in hashtable speichern
-
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
 #include "../inc/LogStats.h"
 
 struct LogStats *lgsCreate(size_t capacity)
 {
 	struct LogStats *stats;
 
-	stats = malloc(sizeof(struct LogStats) + capacity * sizeof(stats->data[0]));
-
+	// allocate struct itself
+	stats = malloc(sizeof(struct LogStats));
 	if (stats == NULL)
 		return NULL;
 
+	// allocate key array
+	stats->keys = malloc(capacity * sizeof(char*));
+	if (stats->keys == NULL)
+	{
+		free(stats);
+		return NULL;
+	}
+
+	// initialize hash table
+	memset(&stats->hash_table, 0, sizeof(stats->hash_table));
+
+	if (hcreate_r(2 * capacity, &stats->hash_table) == 0)
+	{
+		free(stats->keys);
+		free(stats);
+		return NULL;
+	}
+
+	// initialize other variables
 	stats->capacity = capacity;
 	stats->length = 0;
 
@@ -32,11 +48,25 @@ void lgsDestroy(struct LogStats *this)
 {
 	if (this != NULL)
 	{
+		// free key-value pairs
 		for (size_t i = 0; i < this->length; i++)
 		{
-			ctrFree(this->data + i);
+			ENTRY kv_pair = { .key = this->keys[i], .data = NULL };
+			ENTRY *found = NULL;
+
+			hsearch_r(kv_pair, FIND, &found, &this->hash_table);
+
+			if (found != NULL)
+				ctrFree(found->data);
+
+			free(this->keys[i]);
 		}
 
+		// destroy hash table
+		hdestroy_r(&this->hash_table);
+
+		// free key array and this
+		free(this->keys);
 		free(this);
 	}
 }
@@ -48,29 +78,43 @@ int lgsAddLogEntry(struct LogStats *this, struct LogEntry *entry)
 	if (entry == NULL)
 		return 1;
 
-	ssize_t i;
+	ENTRY kv_pair = { .key = entry->date, .data = NULL };
+	ENTRY *found = NULL;
 
-	// check if there's already an entry for the given date
-	for (i = this->length - 1; i >= 0; i--)
-	{
-		if (dtCompare(&(this->data[i].date), &(entry->date)) == 0)
-			break;
-	}
+	hsearch_r(kv_pair, FIND, &found, &this->hash_table);
 
-	// if no entry was found, create a new one
-	if (i < 0)
+	// if key was not found
+	if (found == NULL)
 	{
 		if (this->length >= this->capacity)
 			return 2;
 
-		ctrInit(this->data + this->length, entry->date);
+		// malloc key string and counter
+		kv_pair.key = malloc(9 * sizeof(*kv_pair.key));
+		kv_pair.data = malloc(sizeof(struct Counter));
 
-		i = (ssize_t)this->length;
+		if (kv_pair.key == NULL || kv_pair.data == NULL)
+		{
+			if (kv_pair.key != NULL)
+				free(kv_pair.key);
+			if (kv_pair.data != NULL)
+				free(kv_pair.data);
+
+			return 3;
+		}
+
+		// init key string and counter
+		strcpy(kv_pair.key, entry->date);
+		ctrInit(kv_pair.data);
+
+		// add key-value pair to hash table and key list
+		hsearch_r(kv_pair, ENTER, &found, &this->hash_table);
+		this->keys[this->length] = kv_pair.key;
 		this->length++;
 	}
 
-	// add information to the entry
-	ctrAddLogEntry(this->data + i, entry);
+	// add log entry to counter
+	ctrAddLogEntry(found->data, entry);
 
 	return 0;
 }
@@ -88,11 +132,17 @@ void lgsPrint(struct LogStats *this, FILE *stream)
 	// print data
 	for (size_t i = 0; i < this->length; i++)
 	{
-		struct Counter counter = this->data[i];
-		char str[18];
+		ENTRY kv_pair = { .key = this->keys[i], .data = NULL };
+		ENTRY *found;
+		struct Counter *counter;
 
-		dtToString(&counter.date, str);
-		fprintf(stream, "%10s %10u %10u %10llu %10llu\n", str, counter.n_requests, ctrCountUsers(&counter), counter.n_bytes_in, counter.n_bytes_out);
+		hsearch_r(kv_pair, FIND, &found, &this->hash_table);
+
+		if (found != NULL) // should always be the case
+		{
+			counter = found->data;
+			fprintf(stream, "%10s %10u %10u %10llu %10llu\n", found->key, counter->n_requests, ctrCountUsers(counter), counter->n_bytes_in, counter->n_bytes_out);
+		}
 	}
 }
 
@@ -103,8 +153,8 @@ void lgsSort(struct LogStats *this)
 
 	int compare(const void *x, const void *y)
 	{
-		return dtCompare(&((struct Counter *)x)->date, &((struct Counter *)y)->date);
+		return strcmp(*(const char **) x, *(const char **) y);
 	}
 
-	qsort(this->data, this->length, sizeof(this->data[0]), compare);
+	qsort(this->keys, this->length, sizeof(this->keys[0]), &compare);
 }

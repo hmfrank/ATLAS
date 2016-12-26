@@ -78,16 +78,15 @@ TEST_CASE("parse log entry", "[src/parse.c/parseLogEntry]")
 		{
 			.input = "12.34.56.78 - [23/Dec/2016:18:36:27 +0000] GET 200 394 992 \"/public/\" \"-\"",
 			.expected = 0,
-			.result = { .date = { .year = 2016, .month = 12, .day = 23}, .http_method = HTTP_GET, .http_status = 200,
-					.request_size = 394, .response_size = 992, .remote_address = "12.34.56.78",
-					.requested_file = "/public/", .referer = "-" }
+			.result = { .date = "20161223", .http_method = HTTP_GET, .http_status = 200, .request_size = 394,
+					.response_size = 992, .remote_address = "12.34.56.78", .requested_file = "/public/", .referer = "-" }
 		},
 		{
-			.input = "fancy.url.com !@#$ [12/mAR/9999:4:2:0 +1337] %^&* 999 4294967295 0 \"-\" \"https://example.com/\"",
+			.input = "fancy.url.com !@#$ [2/mAR/9999:4:2:0 +1337] %^&* 999 4294967295 0 \"-\" \"https://example.com/\"",
 			.expected = 0,
-			.result = { .date = { .year = 9999, .month = 3, .day = 12 }, .http_method = HTTP_UNKNOWN, .http_status = 999,
-					.request_size = 4294967295, .response_size = 0, .remote_address = "fancy.url.com",
-					.requested_file = "-", .referer = "https://example.com/" }
+			.result = { .date = "99990302", .http_method = HTTP_UNKNOWN, .http_status = 999, .request_size = 4294967295,
+					.response_size = 0, .remote_address = "fancy.url.com", .requested_file = "-",
+					.referer = "https://example.com/" }
 		},
 		{
 			.input = "8.8.8.8 mike [3/Oct/10000:4:2:0 +1337] GET 200 257 2395 \"index.html\" \"-\"",

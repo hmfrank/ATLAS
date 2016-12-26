@@ -47,7 +47,7 @@ unsigned short toHttpMethod(const char *str)
  * @param str the first 3 characters of the month name (not case sensitive)
  * @return the month number (1 - 12) or 0 on failure.
  */
-unsigned char toMonth(const char *str)
+long toMonth(const char *str)
 {
 	if (str == NULL)
 		return 0;
@@ -76,8 +76,9 @@ int parseLogEntry(FILE *stream, struct LogEntry *result)
 
 	char buffer[PARSER_LINEBUFFER_SIZE];
 	char *ptr;
-	long long int l;
+	long long l;
 
+	long year, month, day;
 	const char *remote_address;
 	const char *requested_file;
 	const char *referer;
@@ -109,21 +110,19 @@ int parseLogEntry(FILE *stream, struct LogEntry *result)
 	if (*(ptr++) != '[')
 		return 1;
 
-	l = strtoll(ptr, &ptr, 10);
+	day = strtol(ptr, &ptr, 10);
 	if (*ptr != '\0')
 		return 1;
-	if (l < 1 || l > 31)
+	if (day < 1 || day > 31)
 		return 1;
-
-	result->date.day = (unsigned char)l;
 
 	// parse month
 	ptr = strtok(NULL, "/");
 	if (ptr == NULL)
 		return 1;
 
-	result->date.month = toMonth(ptr);
-	if (result->date.month == 0)
+	month = toMonth(ptr);
+	if (month == 0)
 		return 1;
 
 	// parse year
@@ -131,12 +130,14 @@ int parseLogEntry(FILE *stream, struct LogEntry *result)
 	if (ptr == NULL)
 		return 1;
 
-	l = strtoll(ptr, &ptr, 10);
+	year = strtol(ptr, &ptr, 10);
 	if (*ptr != '\0')
 		return 1;
-	if (l < 0 || l > 9999)
+	if (year < 0 || year > 9999)
 		return 1;
-	result->date.year = (unsigned short)l;
+
+	// build date string
+	sprintf(result->date, "%04ld%02ld%02ld", year, month, day);
 
 	// ignore time
 	if (strtok(NULL, "]") == NULL)

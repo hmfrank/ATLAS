@@ -33,7 +33,7 @@ DEP += $(TST:$(TSTDIR)%.cpp=$(OBJDIR)%.dpp)
 
 # C compiler and linker flags
 CC = gcc
-CFLAGS = -std=c99 -Wall -Wextra -Werror
+CFLAGS = -std=c99 -Wall -Wextra -Werror -D _GNU_SOURCE
 LDFLAGS =
 
 # C++ compiler and linker flags
