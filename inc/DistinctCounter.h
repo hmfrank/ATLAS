@@ -2,6 +2,7 @@
 #define ATLAS_DISTINCTCOUNTER_H
 
 // TODO: write unit test
+// TODO: add option, to free the added pointers automatically on destruction ()
 
 /**
  * @file DistinctCounter.h
@@ -10,6 +11,7 @@
  */
 
 #include "../lib/AvlTree.h"
+#include "ToFreeList.h"
 
 /**
  * List of all data structures, `struct DistinctCounter` can use.
@@ -22,9 +24,9 @@ enum DistinctCounterType
 };
 
 /**
- * Counts the number of distinct items in a set. You can add items to the set and count them later. If a specific item
- * is added multiple times, it's only counted once. There are many data structures that can be used to accomplish this
- * behaviour, each with its own advantages and disadvantages. To fit your needs best, you can choose which data
+ * Counts the number of distinct strings in a set. You can add strings to the set and count them later. If a specific
+ * string is added multiple times, it's only counted once. There are many data structures that can be used to accomplish
+ * this behaviour, each with its own advantages and disadvantages. To fit your needs best, you can choose which data
  * data structure is used, when initializing a `DistinctCounter`.
  *
  * You should always call `dstInit()` before and `dstFree()` after you using a distinct counter.
@@ -72,6 +74,11 @@ struct DistinctCounter
 	{
 		struct AvlTree *avl_tree;
 	} counter;
+
+	/**
+	 * Stores all pointers that have to be freed on destruction.
+	 */
+	struct ToFreeList *to_free;
 };
 
 /**
@@ -85,11 +92,6 @@ union DstInitInfo
 	 */
 	struct
 	{
-		/**
-		 * @see avlInit()
-		 * @see AvlTree::compare
-		 */
-		int (*compare)(const void *, const void *);
 	} avl_tree;
 };
 
@@ -114,14 +116,16 @@ int dstInit(struct DistinctCounter *_this, int type, union DstInitInfo *init_inf
  * @param _this Points to the counter that gets freed (this pointer itself is not freed).
  */
 void dstFree(struct DistinctCounter *_this);
-
 /**
- * Adds the given item to the counter.
+ * Adds the given string to the counter.
+ *
+ * After a call to this function, you can do anything with the string `item` without any problems. If data structures
+ * are used that need to store the string (like avl tree), it gets copied before insertion.
  *
  * @param _this Points to the counter to add the item to.
- * @param item The item to add.
+ * @param item Points to the string to add.
  */
-void dstAdd(struct DistinctCounter *_this, void *item);
+void dstAdd(struct DistinctCounter *_this, char *item);
 
 /**
  * Returns the number of distinct items in the set.

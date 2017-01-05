@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include "../inc/DistinctCounter.h"
 
 /**
@@ -6,6 +7,18 @@
  *
  * Contains implementations of the functions defined in DistinctCounter.h, as well as some static helper functions.
  */
+
+int strCompare(const void *a, const void *b)
+{
+	if (a == NULL && b == NULL)
+		return 0;
+	else if (a == NULL)
+		return -1;
+	else if (b == NULL)
+		return 1;
+
+	return strcmp((const char *)a, (const char *)b);
+}
 
 /**
  * @param this must not be `NULL`
@@ -20,6 +33,7 @@ static int dstInitAvlTree(struct DistinctCounter *this, int (*compare)(const voi
 	avlInit(this->counter.avl_tree, compare);
 
 	this->type = AVL_TREE;
+	this->to_free = NULL;
 
 	return 0;
 }
@@ -30,14 +44,24 @@ static int dstInitAvlTree(struct DistinctCounter *this, int (*compare)(const voi
 static inline void dstFreeAvlTree(struct DistinctCounter *this)
 {
 	avlFree(this->counter.avl_tree);
+	free(this->counter.avl_tree);
+	tflReset(&this->to_free);
 }
 
 /**
  * @param this must not be `NULL`
  */
-static inline void dstAddAvlTree(struct DistinctCounter *this, void *item)
+static inline void dstAddAvlTree(struct DistinctCounter *this, char *item)
 {
-	avlInsert(this->counter.avl_tree, item);
+	// copy string
+	char *copy = malloc(( strlen(item) + 1) * sizeof(*copy));
+	if (copy == NULL)
+		return;
+
+	strcpy(copy, item);
+	tflAdd(&this->to_free, copy);
+
+	avlInsert(this->counter.avl_tree, copy);
 }
 
 /**
@@ -58,7 +82,7 @@ int dstInit(struct DistinctCounter *this, int type, union DstInitInfo *init_info
 	switch (type)
 	{
 		case AVL_TREE:
-			return dstInitAvlTree(this, init_info->avl_tree.compare);
+			return dstInitAvlTree(this, &strCompare);
 		default:
 			return 1;
 	}
@@ -77,7 +101,7 @@ void dstFree(struct DistinctCounter *this)
 	}
 }
 
-void dstAdd(struct DistinctCounter *this, void *item)
+void dstAdd(struct DistinctCounter *this, char *item)
 {
 	if (this == NULL)
 		return;
