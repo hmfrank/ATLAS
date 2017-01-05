@@ -131,7 +131,11 @@ TEST_CASE("parse log entry", "[src/parse.c/parseLogEntry]")
 		REQUIRE(parseLogEntry(file, &entry) == test_data->expected);
 
 		if (test_data->expected == 0)
+		{
 			REQUIRE(lgeEquals(&entry, &test_data->result));
+
+			lgeFreeStrings(&entry);
+		}
 
 		fclose(file);
 	}

@@ -58,6 +58,8 @@ int main()
 		{
 			if (lgsAddLogEntry(stats, &entry) != 0)
 				fprintf(stderr, "Can't add log entry to stats!\n");
+
+			lgeFreeStrings(&entry);
 		}
 	}
 

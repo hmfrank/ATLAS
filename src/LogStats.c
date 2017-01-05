@@ -57,7 +57,10 @@ void lgsDestroy(struct LogStats *this)
 			hsearch_r(kv_pair, FIND, &found, &this->hash_table);
 
 			if (found != NULL)
+			{
 				ctrFree(found->data);
+				free(found->data);
+			}
 
 			free(this->keys[i]);
 		}

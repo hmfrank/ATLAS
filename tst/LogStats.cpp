@@ -49,6 +49,8 @@ TEST_CASE("log stats", "[src/LogStats.c]")
 		struct LogEntry entry;
 		const char *prev;
 
+		entry.remote_address = "0.4.2.0";
+
 		int year = 2016;
 		int month = 7;
 
