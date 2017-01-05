@@ -2,7 +2,6 @@
 #define ATLAS_DISTINCTCOUNTER_H
 
 // TODO: write unit test
-// TODO: add option, to free the added pointers automatically on destruction ()
 
 /**
  * @file DistinctCounter.h
