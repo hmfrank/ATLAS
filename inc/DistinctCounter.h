@@ -1,8 +1,6 @@
 #ifndef ATLAS_DISTINCTCOUNTER_H
 #define ATLAS_DISTINCTCOUNTER_H
 
-// TODO: write unit test
-
 /**
  * @file DistinctCounter.h
  *
@@ -124,7 +122,7 @@ void dstFree(struct DistinctCounter *_this);
  * @param _this Points to the counter to add the item to.
  * @param item Points to the string to add.
  */
-void dstAdd(struct DistinctCounter *_this, char *item);
+void dstAdd(struct DistinctCounter *_this, const char *item);
 
 /**
  * Returns the number of distinct items in the set.

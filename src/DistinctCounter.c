@@ -51,7 +51,7 @@ static inline void dstFreeAvlTree(struct DistinctCounter *this)
 /**
  * @param this must not be `NULL`
  */
-static inline void dstAddAvlTree(struct DistinctCounter *this, char *item)
+static inline void dstAddAvlTree(struct DistinctCounter *this, const char *item)
 {
 	// copy string
 	char *copy = malloc(( strlen(item) + 1) * sizeof(*copy));
@@ -101,7 +101,7 @@ void dstFree(struct DistinctCounter *this)
 	}
 }
 
-void dstAdd(struct DistinctCounter *this, char *item)
+void dstAdd(struct DistinctCounter *this, const char *item)
 {
 	if (this == NULL)
 		return;
