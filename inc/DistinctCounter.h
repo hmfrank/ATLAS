@@ -7,7 +7,8 @@
  * Contains the structure definition of `DistinctCounter`, as well as some related function prototypes.
  */
 
-#include "../lib/AvlTree.h"
+#include <AvlTree.h>
+
 #include "ToFreeList.h"
 
 /**

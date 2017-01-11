@@ -10,35 +10,31 @@ LIBDIR = lib/
 SRCDIR = src/
 TSTDIR = tst/
 
-# external sources
-EXT = $(LIBDIR)catch.hpp $(LIBDIR)AvlTree.h $(LIBDIR)AvlTree.c
+# stuff to download and libraries
+DNL = $(LIBDIR)catch.hpp $(LIBDIR)AuD/
+INC = $(LIBDIR) $(LIBDIR)AuD/inc/
+LIBS = $(LIBDIR)libaud.a
 
 # source and object file for main executable
-INC  = $(wildcard $(INCDIR)*.h)
 SRC  = $(wildcard $(SRCDIR)*.c)
-SRC += $(filter %.c, $(EXT))
 OBJ  = $(filter %.o, $(SRC:$(SRCDIR)%.c=$(OBJDIR)%.o))
-OBJ += $(filter %.ol, $(SRC:$(LIBDIR)%.c=$(OBJDIR)%.ol))
 
 # source and object files for unit test executable
-TST   = $(wildcard $(TSTDIR)*.cpp)
 TSRC  = $(filter-out $(SRCDIR)main.c, $(SRC))
-TSRC += $(TST)
-TOBJ  = $(filter-out $(OBJDIR)main.o, $(OBJ))
-TOBJ += $(TST:$(TSTDIR)%.cpp=$(OBJDIR)%.opp)
+TSRC += $(wildcard $(TSTDIR)*.cpp)
+TOBJ  = $(patsubst $(SRCDIR)%.c, $(OBJDIR)%.o, $(patsubst $(TSTDIR)%.cpp, $(OBJDIR)%.opp, $(TSRC)))
 
-DEP  = $(filter %.d, $(SRC:$(SRCDIR)%.c=$(OBJDIR)%.d))
-DEP += $(filter %.dl, $(SRC:$(LIBDIR)%.c=$(OBJDIR)%.dl))
-DEP += $(TST:$(TSTDIR)%.cpp=$(OBJDIR)%.dpp)
+DEP  = $(patsubst $(SRCDIR)%.c, $(OBJDIR)%.d, $(patsubst $(TSTDIR)%.cpp, $(OBJDIR)%.dpp, $(TSRC)))
+DEP += $(OBJDIR)main.d
 
 # C compiler and linker flags
 CC = gcc
-CFLAGS = -std=c99 -g -Wall -Wextra -Werror -D _GNU_SOURCE
+CFLAGS = -std=c99 -g -Wall -Wextra -Werror $(INC:%=-I %) -D _GNU_SOURCE
 LDFLAGS =
 
 # C++ compiler and linker flags
 CXX = g++
-CXXFLAGS = -std=c++11 -Wall -Wextra -Werror
+CXXFLAGS = -std=c++11 -Wall -Wextra -Werror $(INC:%=-I %)
 LXXFLAGS =
 
 .PHONY: all doc test clean destroy
@@ -59,37 +55,29 @@ destroy: clean
 
 
 # link atlas
-$(EXE): $(OBJ)
+$(EXE): $(OBJ) $(LIBS)
 	$(CC) $(CFLAGS) $^ $(LDFLAGS) -o $@
 
 # link unit test
-$(TEST): $(TOBJ)
+$(TEST): $(TOBJ) $(LIBS)
 	$(CXX) $(CXXFLAGS) $^ $(LXXFLAGS) -o $@
 
 # .o file
-$(OBJDIR)%.o: $(SRCDIR)%.c $(EXT) | $(OBJDIR)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-# .ol file
-$(OBJDIR)%.ol: $(LIBDIR)%.c $(EXT) | $(OBJDIR)
+$(OBJDIR)%.o: $(SRCDIR)%.c | $(OBJDIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # .opp file
-$(OBJDIR)%.opp: $(TSTDIR)%.cpp $(EXT) | $(OBJDIR)
+$(OBJDIR)%.opp: $(TSTDIR)%.cpp | $(OBJDIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 -include $(DEP)
 
 # .d file
-$(OBJDIR)%.d: $(SRCDIR)%.c $(EXT) | $(OBJDIR)
+$(OBJDIR)%.d: $(SRCDIR)%.c $(DNL) | $(OBJDIR)
 	$(CC) -MM $< -MT $(subst .d,.o,$@) > $@
 
-# .dl file
-$(OBJDIR)%.dl: $(LIBDIR)%.c $(EXT) | $(OBJDIR)
-	$(CC) -MM $< -MT $(subst .dl,.ol,$@) > $@
-
 # .dpp file
-$(OBJDIR)%.dpp: $(TSTDIR)%.cpp $(EXT) | $(OBJDIR)
+$(OBJDIR)%.dpp: $(TSTDIR)%.cpp $(DNL) | $(OBJDIR)
 	$(CXX) -MM $< -MT $(subst .dpp,.opp,$@) > $@
 
 # folders
@@ -100,11 +88,11 @@ $(OBJDIR) $(LIBDIR) $(DOCDIR):
 
 # libraries
 $(LIBDIR)catch.hpp: | $(LIBDIR)
-	wget "https://raw.githubusercontent.com/philsquared/Catch/master/single_include/catch.hpp" -O $@
+	wget -q "https://raw.githubusercontent.com/philsquared/Catch/master/single_include/catch.hpp" -O $@
 
-$(LIBDIR)AvlTree.h: | $(LIBDIR)
-	wget "https://raw.githubusercontent.com/hmfrank/AuD/master/src/AvlTree.h" -O $@
+$(LIBDIR)AuD/: | $(LIBDIR)
+	git clone -q --single-branch "https://github.com/hmfrank/AuD/" $@
 
-$(LIBDIR)AvlTree.c: | $(LIBDIR)
-	wget "https://raw.githubusercontent.com/hmfrank/AuD/master/src/AvlTree.c" -O $@
-
+$(LIBDIR)libaud.a: $(LIBDIR)AuD/
+	$(MAKE) -C $(LIBDIR)AuD/
+	cp $(LIBDIR)AuD/libaud.a $@

@@ -1,4 +1,4 @@
-#include "../lib/catch.hpp"
+#include <catch.hpp>
 
 extern "C"
 {

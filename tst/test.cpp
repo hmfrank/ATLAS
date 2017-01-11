@@ -1,6 +1,6 @@
 #include <climits>
 #define CATCH_CONFIG_MAIN
-#include "../lib/catch.hpp"
+#include <catch.hpp>
 
 // TODO: run valigrind memory leak tests
 
