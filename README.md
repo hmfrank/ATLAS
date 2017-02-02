@@ -5,10 +5,12 @@ the program can't do very much, for now.
 ## Makefile Targets
 ### `make all`
 Compiles the main program and creates an executable called _atlas_.
+The first time you run this command, the AuD library will be donwnloaded from
+[here](https://github.com/hmfrank/AuD "AuD").
 
 ### `make test`
-Compiles the unit test and creates an executable called _utest_. The first time you run this command, the _Catch Test
-Framework_ single header file will be downloaded automatically from
+Compiles the unit test and creates an executable called _utest_.
+The first time you run this command, the _Catch Test Framework_ single header file will be downloaded automatically from
 [here](https://raw.githubusercontent.com/philsquared/Catch/master/single_include/catch.hpp "catch.cpp").  
 [More information on the Catch Test Framework here.](https://github.com/philsquared/Catch "catch.cpp")
 
