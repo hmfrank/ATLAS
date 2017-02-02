@@ -20,9 +20,29 @@ int strCompare(const void *a, const void *b)
 	return strcmp((const char *)a, (const char *)b);
 }
 
-void hash(void *item, size_t h, void *buffer)
+void hash(const void *item, size_t h, void *buffer)
 {
-	// TODO: implement hash function
+	if (item == NULL)
+	{
+		for (size_t i = 0; i < h; i++)
+			((char*)buffer)[i] = 0;
+
+		return;
+	}
+
+	const unsigned char *string = item;
+	unsigned int seed = 5381;
+	unsigned char c;
+
+	while ((c = *(string++)) != '\0')
+		seed = seed * 33 + c;
+
+	srand(seed);
+
+	for (size_t i = 0; i < h; i++)
+	{
+		((char*)buffer)[i] = (char)rand();
+	}
 }
 
 /**
@@ -49,7 +69,7 @@ static int dstInitAvlTree(struct DistinctCounter *this, int (*compare)(const voi
  * @param b 4 < b < sizeof(size_t) * CHAR_BIT
  * @return 0 on success, non-zero on failure
  */
-static int dstInitHyperLogLog(struct DistinctCounter *this, unsigned char r, unsigned char b, void (*hash)(void*, size_t, void*))
+static int dstInitHyperLogLog(struct DistinctCounter *this, unsigned char r, unsigned char b, void (*hash)(const void*, size_t, void*))
 {
 	this->counter.hyperloglog = malloc(sizeof(struct HyperLogLog));
 	if (this->counter.hyperloglog == NULL)
