@@ -8,6 +8,7 @@
  */
 
 #include <AvlTree.h>
+#include <HyperLogLog.h>
 
 #include "ToFreeList.h"
 
@@ -18,7 +19,8 @@
  */
 enum DistinctCounterType
 {
-	AVL_TREE
+	AVL_TREE,
+	HYPERLOGLOG
 };
 
 /**
@@ -71,6 +73,7 @@ struct DistinctCounter
 	union
 	{
 		struct AvlTree *avl_tree;
+		struct HyperLogLog *hyperloglog;
 	} counter;
 
 	/**
@@ -91,6 +94,10 @@ union DstInitInfo
 	struct
 	{
 	} avl_tree;
+
+	struct
+	{
+	} hyperloglog;
 };
 
 /**
