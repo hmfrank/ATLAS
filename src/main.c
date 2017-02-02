@@ -4,18 +4,16 @@
  * File that contains the main function.
  */
 
+// TODO: make up command line arguments
 // TODO: let the user choose, which data structure is used to count users
 // TODO: add global counter
+// TODO: show graphical diagrams
 
 #include <search.h>
 #include <stdlib.h>
+#include "../inc/globals.h"
 #include "../inc/LogStats.h"
 #include "../inc/parse.h"
-
-/**
- * The maximum number of days the program can store information about.
- */
-size_t MAXN_DAYS = 42;
 
 /**
  * Prints an error message to `stderr` and exits the program.
@@ -37,7 +35,7 @@ int main()
 {
 	struct LogStats *stats;
 
-	stats = lgsCreate(MAXN_DAYS);
+	stats = lgsCreate(MAX_N_DAYS);
 
 	if (stats == NULL)
 		errexit("Error!", 1);
