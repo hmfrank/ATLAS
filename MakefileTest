@@ -21,7 +21,7 @@ DEP = $(patsubst $(SRCDIR)%.cpp, $(OBJDIR)%.dpp, $(SRC))
 # C++ compiler and linker flags
 CXX = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra -Werror $(INC:%=-I %)
-LXXFLAGS =
+LXXFLAGS = -lm
 
 
 

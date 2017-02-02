@@ -138,7 +138,7 @@ static inline size_t dstCountAvlTree(struct DistinctCounter *this)
 
 static inline size_t dstCountHyperLogLog(struct DistinctCounter *this)
 {
-	return (size_t)(this->counter.hyperloglog);
+	return (size_t)hllCount(this->counter.hyperloglog);
 }
 
 int dstInit(struct DistinctCounter *this, int type, union DstInitInfo *init_info)

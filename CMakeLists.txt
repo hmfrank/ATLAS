@@ -21,3 +21,5 @@ add_executable(utest ${SOURCE_FILES_UTEST})
 
 target_link_libraries(atlas ${CMAKE_SOURCE_DIR}/lib/libaud.a)
 target_link_libraries(utest ${CMAKE_SOURCE_DIR}/lib/libaud.a)
+
+# TODO: fix CMakeLists.txt

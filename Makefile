@@ -11,12 +11,14 @@ SRC = $(wildcard $(SRCDIR)*.c) $(wildcard $(INCDIR)*.h)
 # phony targets
 .PHONY: all doc test clean destroy
 
-all: $(EXE)
+all:
+	$(MAKE) -f MakefileAtlas $(EXE)
 
 doc: $(SRC) | $(DOCDIR)
 	doxygen
 
-test: $(TST)
+test:
+	$(MAKE) -f MakefileTest $(TST)
 
 clean:
 	$(MAKE) -f MakefileAtlas clean
@@ -27,13 +29,9 @@ destroy:
 	$(MAKE) -f MakefileTest destroy
 	rm -rf $(DOCDIR)
 
-$(EXE):
-	$(MAKE) -f MakefileAtlas $@
-
-$(TST):
-	$(MAKE) -f MakefileTest $@
-
 # folders
 $(DOCDIR):
 	mkdir $@
+
+# TODO: fix Makefiles
 

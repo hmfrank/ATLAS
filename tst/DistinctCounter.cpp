@@ -34,3 +34,35 @@ TEST_CASE("distinct counter avl tree", "[src/DistinctCounter.c]")
 
 	dstFree(&dc);
 }
+
+TEST_CASE("distinct count hyperloglog", "[whatever]")
+{
+	struct DistinctCounter dc;
+	union DstInitInfo info;
+
+	REQUIRE(dstInit(NULL, HYPERLOGLOG, NULL));
+	REQUIRE(dstInit(NULL, HYPERLOGLOG, &info));
+	REQUIRE(dstInit(&dc, HYPERLOGLOG, NULL));
+
+	REQUIRE_FALSE(dstInit(&dc, HYPERLOGLOG, &info));
+	REQUIRE(dstCount(&dc) == 0);
+
+	dstAdd(&dc, "a");
+	REQUIRE(dstCount(&dc) == 1);
+
+	dstAdd(&dc, "a");
+	REQUIRE(dstCount(&dc) == 1);
+
+	for (int i = 0; i < 1000; i++)
+	{
+		char str[4];
+		sprintf(str, "%d", i);
+		dstAdd(&dc, str);
+	}
+
+	size_t count = dstCount(&dc);
+	REQUIRE(990 <= count);
+	REQUIRE(count <= 1010);
+
+	dstFree(&dc);
+}
