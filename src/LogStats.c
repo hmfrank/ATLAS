@@ -8,7 +8,42 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include "../inc/globals.h"
 #include "../inc/LogStats.h"
+
+/**
+ * Prints the table header to `stream`.
+ *
+ * @param stream not `NULL`
+ */
+static void printHeader(FILE *stream)
+{
+	if (SHOW_DATE)      fprintf(stream, "%10s ", "DATE");
+	if (SHOW_REQUESTS)  fprintf(stream, "%10s ", "REQUESTS");
+	if (SHOW_USERS)     fprintf(stream, "%10s ", "USERS");
+	if (SHOW_IN_BYTES)  fprintf(stream, "%10s ", "IN");
+	if (SHOW_OUT_BYTES) fprintf(stream, "%10s ", "OUT");
+
+	fprintf(stream, "\n");
+}
+
+/**
+ * Prints a table row to `stream` with the data from `counter`.
+ *
+ * @param date not `NULL`
+ * @param counter not `NULL`
+ * @param stream not `NULL`
+ */
+static void printRow(const char *date, struct Counter *counter, FILE *stream)
+{
+	if (SHOW_DATE)      fprintf(stream, "%10s ", date);
+	if (SHOW_REQUESTS)  fprintf(stream, "%10u ", counter->n_requests);
+	if (SHOW_USERS)     fprintf(stream, "%10u ", ctrCountUsers(counter));
+	if (SHOW_IN_BYTES)  fprintf(stream, "%10llu ", counter->n_bytes_in);
+	if (SHOW_OUT_BYTES) fprintf(stream, "%10llu ", counter->n_bytes_out);
+
+	fprintf(stream, "\n");
+}
 
 struct LogStats *lgsCreate(size_t capacity)
 {
@@ -144,8 +179,10 @@ void lgsPrint(struct LogStats *this, FILE *stream)
 	if (stream == NULL)
 		return;
 
-	// print header
-	fprintf(stream, "%10s %10s %10s %10s %10s\n", "DATE", "REQUESTS", "USERS", "IN", "OUT");
+	if (SHOW_TABLE_HEADER)
+	{
+		printHeader(stream);
+	}
 
 	// print days
 	for (size_t i = 0; i < this->length; i++)
@@ -159,12 +196,15 @@ void lgsPrint(struct LogStats *this, FILE *stream)
 		if (found != NULL) // should always be the case
 		{
 			counter = found->data;
-			fprintf(stream, "%10s %10u %10u %10llu %10llu\n", found->key, counter->n_requests, ctrCountUsers(counter), counter->n_bytes_in, counter->n_bytes_out);
+			printRow(found->key, counter, stream);
 		}
 	}
 
 	// print total counter
-	fprintf(stream, "%10s %10u %10u %10llu %10llu\n", "all", this->total_counter.n_requests, ctrCountUsers(&this->total_counter), this->total_counter.n_bytes_in, this->total_counter.n_bytes_out);
+	if (SHOW_TOTAL_COUNT)
+	{
+		printRow("all", &this->total_counter, stream);
+	}
 }
 
 void lgsSort(struct LogStats *this)
