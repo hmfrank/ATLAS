@@ -29,6 +29,11 @@
 struct LogStats
 {
 	/**
+	 * Global counter for the entire log.
+	 */
+	struct Counter total_counter;
+
+	/**
 	 * The maximum number of items that memory is allocated for.
 	 */
 	size_t capacity;

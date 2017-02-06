@@ -19,10 +19,18 @@ struct LogStats *lgsCreate(size_t capacity)
 	if (stats == NULL)
 		return NULL;
 
+	// create the total counter
+	if (ctrInit(&stats->total_counter) != 0)
+	{
+		free(stats);
+		return NULL;
+	}
+
 	// allocate key array
 	stats->keys = malloc(capacity * sizeof(char*));
 	if (stats->keys == NULL)
 	{
+		ctrFree(&stats->total_counter);
 		free(stats);
 		return NULL;
 	}
@@ -32,6 +40,7 @@ struct LogStats *lgsCreate(size_t capacity)
 
 	if (hcreate_r(2 * capacity, &stats->hash_table) == 0)
 	{
+		ctrFree(&stats->total_counter);
 		free(stats->keys);
 		free(stats);
 		return NULL;
@@ -48,6 +57,9 @@ void lgsDestroy(struct LogStats *this)
 {
 	if (this != NULL)
 	{
+		// destroy total counter
+		ctrFree(&this->total_counter);
+
 		// free key-value pairs
 		for (size_t i = 0; i < this->length; i++)
 		{
@@ -116,8 +128,11 @@ int lgsAddLogEntry(struct LogStats *this, struct LogEntry *entry)
 		this->length++;
 	}
 
-	// add log entry to counter
+	// add log entry to day counter
 	ctrAddLogEntry(found->data, entry);
+
+	// add to total counter
+	ctrAddLogEntry(&this->total_counter, entry);
 
 	return 0;
 }
@@ -132,7 +147,7 @@ void lgsPrint(struct LogStats *this, FILE *stream)
 	// print header
 	fprintf(stream, "%10s %10s %10s %10s %10s\n", "DATE", "REQUESTS", "USERS", "IN", "OUT");
 
-	// print data
+	// print days
 	for (size_t i = 0; i < this->length; i++)
 	{
 		ENTRY kv_pair = { .key = this->keys[i], .data = NULL };
@@ -147,6 +162,9 @@ void lgsPrint(struct LogStats *this, FILE *stream)
 			fprintf(stream, "%10s %10u %10u %10llu %10llu\n", found->key, counter->n_requests, ctrCountUsers(counter), counter->n_bytes_in, counter->n_bytes_out);
 		}
 	}
+
+	// print total counter
+	fprintf(stream, "%10s %10u %10u %10llu %10llu\n", "all", this->total_counter.n_requests, ctrCountUsers(&this->total_counter), this->total_counter.n_bytes_in, this->total_counter.n_bytes_out);
 }
 
 void lgsSort(struct LogStats *this)
