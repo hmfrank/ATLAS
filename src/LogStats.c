@@ -185,18 +185,21 @@ void lgsPrint(struct LogStats *this, FILE *stream)
 	}
 
 	// print days
-	for (size_t i = 0; i < this->length; i++)
+	if (SHOW_DAYS)
 	{
-		ENTRY kv_pair = { .key = this->keys[i], .data = NULL };
-		ENTRY *found;
-		struct Counter *counter;
-
-		hsearch_r(kv_pair, FIND, &found, &this->hash_table);
-
-		if (found != NULL) // should always be the case
+		for (size_t i = 0; i < this->length; i++)
 		{
-			counter = found->data;
-			printRow(found->key, counter, stream);
+			ENTRY kv_pair = {.key = this->keys[i], .data = NULL};
+			ENTRY *found;
+			struct Counter *counter;
+
+			hsearch_r(kv_pair, FIND, &found, &this->hash_table);
+
+			if (found != NULL) // should always be the case
+			{
+				counter = found->data;
+				printRow(found->key, counter, stream);
+			}
 		}
 	}
 

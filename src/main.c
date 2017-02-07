@@ -4,11 +4,6 @@
  * File that contains the main function.
  */
 
-// TODO: make up command line arguments
-// TODO: let the user choose, which data structure is used to count users
-// TODO: add global counter
-// TODO: show graphical diagrams
-
 #include <search.h>
 #include <stdlib.h>
 #include "../inc/globals.h"
@@ -31,9 +26,11 @@ void errexit(const char *message, int error);
  * @param argv List of all command line arguments.
  * @return A status code (0 means success, anything else means something went wrong).
  */
-int main()
+int main(int argc, char **argv)
 {
 	struct LogStats *stats;
+
+	parseCommandLineArguments(argc, argv);
 
 	stats = lgsCreate(MAX_N_DAYS);
 

@@ -7,14 +7,14 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -Wall -Wextra -Werror -I l
 include_directories(${CMAKE_SOURCE_DIR}/lib/ ${CMAKE_SOURCE_DIR}/lib/AuD/inc/)
 
 set(SOURCE_FILES_ATLAS
-        src/Counter.c src/DistinctCounter.c src/LogEntry.c src/LogStats.c src/main.c src/parse.c src/ToFreeList.c src/globals.c
+        src/Counter.c src/DistinctCounter.c src/LogEntry.c src/LogStats.c src/parse.c src/ToFreeList.c src/globals.c src/main.c
         inc/Counter.h inc/DistinctCounter.h inc/LogEntry.h inc/LogStats.h inc/parse.h inc/ToFreeList.h inc/globals.h
         lib/AuD/inc/AvlTree.h)
 set(SOURCE_FILES_UTEST
         src/Counter.c src/DistinctCounter.c src/LogEntry.c src/LogStats.c src/parse.c src/ToFreeList.c src/globals.c
         inc/Counter.h inc/DistinctCounter.h inc/LogEntry.h inc/LogStats.h inc/parse.h inc/ToFreeList.h inc/globals.h
-        lib/AuD/inc/AvlTree.h
-        tst/Counter.cpp tst/DistinctCounter.cpp tst/LogEntry.cpp tst/LogStats.cpp tst/parse.cpp tst/test.cpp tst/ToFreeList.cpp)
+        tst/Counter.cpp tst/DistinctCounter.cpp tst/LogEntry.cpp tst/LogStats.cpp tst/parse.cpp tst/test.cpp tst/ToFreeList.cpp tst/globals.cpp
+		lib/AuD/inc/AvlTree.h)
 
 add_executable(atlas ${SOURCE_FILES_ATLAS})
 add_executable(utest ${SOURCE_FILES_UTEST})
