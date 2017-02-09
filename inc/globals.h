@@ -48,6 +48,11 @@ extern int const * const SHOW_IN_BYTES;
  */
 extern int const * const SHOW_OUT_BYTES;
 
+/**
+ * Specifies the data structure used to count the number of unique users.
+ */
+extern int const * const METHOD;
+
 #define MAX_N_DAYS (*MAX_N_DAYS)
 #define SHOW_TABLE_HEADER (*SHOW_TABLE_HEADER)
 #define SHOW_DAYS (*SHOW_DAYS)
@@ -57,6 +62,7 @@ extern int const * const SHOW_OUT_BYTES;
 #define SHOW_USERS (*SHOW_USERS)
 #define SHOW_IN_BYTES (*SHOW_IN_BYTES)
 #define SHOW_OUT_BYTES (*SHOW_OUT_BYTES)
+#define METHOD (*METHOD)
 
 /**
  * Reads the command line arguments and sets the global variables accordingly.

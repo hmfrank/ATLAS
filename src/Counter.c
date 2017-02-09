@@ -8,6 +8,7 @@
 
 #include <string.h>
 #include "../inc/Counter.h"
+#include "../inc/globals.h"
 
 int ctrInit(struct Counter *this)
 {
@@ -17,7 +18,7 @@ int ctrInit(struct Counter *this)
 	union DstInitInfo counter_init_info;
 
 	memset(this, 0, sizeof(struct Counter));
-	return dstInit(&this->user_counter, AVL_TREE, &counter_init_info);
+	return dstInit(&this->user_counter, METHOD, &counter_init_info);
 }
 
 void ctrFree(struct Counter *this)

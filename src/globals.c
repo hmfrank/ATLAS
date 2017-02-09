@@ -1,5 +1,7 @@
+#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../inc/DistinctCounter.h"
 
 static size_t max_n_days = 42;
 static int show_table_header = 1;
@@ -10,6 +12,7 @@ static int show_requests = 1;
 static int show_users = 1;
 static int show_in_bytes = 1;
 static int show_out_bytes = 1;
+static int method = AVL_TREE;
 
 size_t const * const MAX_N_DAYS = &max_n_days;
 int const * const SHOW_TABLE_HEADER = &show_table_header;
@@ -20,6 +23,7 @@ int const * const SHOW_REQUESTS = &show_requests;
 int const * const SHOW_USERS = &show_users;
 int const * const SHOW_IN_BYTES = &show_in_bytes;
 int const * const SHOW_OUT_BYTES = &show_out_bytes;
+int const * const METHOD = &method;
 
 void parseCommandLineArguments(int argc, char **argv)
 {
@@ -53,7 +57,16 @@ void parseCommandLineArguments(int argc, char **argv)
 		}
 		else if (strncasecmp(arg, "-m=", 3) == 0 || strncasecmp(arg, "--method=", 9) == 0)
 		{
-			// TODO: let user choose with method is used for counting (avl-tree or hyperloglog)
+			arg = strchrnul(arg, '=') + 1;
+
+			if (toupper(arg[0]) == 'A')
+			{
+				method = AVL_TREE;
+			}
+			else if (toupper(arg[0]) == 'H')
+			{
+				method = HYPERLOGLOG;
+			}
 		}
 		else if (strncasecmp(arg, "-d=", 3) == 0 || strncasecmp(arg, "--days=", 7) == 0)
 		{

@@ -3,6 +3,7 @@
 
 extern "C"
 {
+#include "../inc/DistinctCounter.h"
 #include "../inc/globals.h"
 }
 
@@ -45,6 +46,7 @@ TEST_CASE("parse command line args", "[src/globals.c]")
 		REQUIRE(!!SHOW_TOTAL_COUNT == !!(i & 1));
 	}
 
+	// test --days
 	argv[1] = (char*)"-d=0";
 	parseCommandLineArguments(2, argv);
 	REQUIRE(MAX_N_DAYS == 0);
@@ -60,4 +62,21 @@ TEST_CASE("parse command line args", "[src/globals.c]")
 	argv[1] = (char*)"--days=1337";
 	parseCommandLineArguments(2, argv);
 	REQUIRE(MAX_N_DAYS == 1337);
+
+	// test --method
+	argv[1] = (char*)"-m=AVL-Tree";
+	parseCommandLineArguments(2, argv);
+	REQUIRE(METHOD == AVL_TREE);
+
+	argv[1] = (char*)"--method=a";
+	parseCommandLineArguments(2, argv);
+	REQUIRE(METHOD == AVL_TREE);
+
+	argv[1] = (char*)"-m=hll";
+	parseCommandLineArguments(2, argv);
+	REQUIRE(METHOD == HYPERLOGLOG);
+
+	argv[1] = (char*)"--method=HyperLogLog";
+	parseCommandLineArguments(2, argv);
+	REQUIRE(METHOD == HYPERLOGLOG);
 }
