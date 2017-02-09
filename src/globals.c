@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <string.h>
 
 static size_t max_n_days = 42;
@@ -32,25 +33,40 @@ void parseCommandLineArguments(int argc, char **argv)
 		if ((arg = argv[i]) == NULL)
 			continue;
 
-		if (strncasecmp(arg, "-r=", 3) == 0)
+		if (strncasecmp(arg, "-r=", 3) == 0 || strncasecmp(arg, "--rows=", 7) == 0)
 		{
-			show_table_header = strchr(arg + 3, 'h') != NULL;
-			show_days = strchr(arg + 3, 'd') != NULL;
-			show_total_count = strchr(arg + 3, 't') != NULL;
+			arg = strchrnul(arg, '=') + 1;
+
+			show_table_header = strchr(arg, 'h') != NULL;
+			show_days = strchr(arg , 'd') != NULL;
+			show_total_count = strchr(arg, 't') != NULL;
 		}
-		else if (strncasecmp(arg, "-c=", 3) == 0)
+		else if (strncasecmp(arg, "-c=", 3) == 0 || strncasecmp(arg, "--columns=", 10) == 0)
 		{
-			show_date = strchr(arg + 3, 'd') != NULL;
-			show_requests = strchr(arg + 3, 'r') != NULL;
-			show_users = strchr(arg + 3, 'u') != NULL;
-			show_in_bytes = strchr(arg + 3, 'i') != NULL;
-			show_out_bytes = strchr(arg + 3, 'o') != NULL;
+			arg = strchrnul(arg, '=') + 1;
+
+			show_date = strchr(arg, 'd') != NULL;
+			show_requests = strchr(arg, 'r') != NULL;
+			show_users = strchr(arg, 'u') != NULL;
+			show_in_bytes = strchr(arg, 'i') != NULL;
+			show_out_bytes = strchr(arg, 'o') != NULL;
 		}
-		else if (strncasecmp(arg, "-m=", 3) == 0)
+		else if (strncasecmp(arg, "-m=", 3) == 0 || strncasecmp(arg, "--method=", 9) == 0)
 		{
 			// TODO: let user choose with method is used for counting (avl-tree or hyperloglog)
 		}
+		else if (strncasecmp(arg, "-d=", 3) == 0 || strncasecmp(arg, "--days=", 7) == 0)
+		{
+			long value;
+			char *end;
 
-		// TODO: let user choose max_n_days
+			arg = strchrnul(arg, '=') + 1;
+
+			value = labs(strtol(arg, &end, 0));
+			if (end != arg)
+			{
+				max_n_days = (size_t)value;
+			}
+		}
 	}
 }

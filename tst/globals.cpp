@@ -15,8 +15,12 @@ TEST_CASE("parse command line args", "[src/globals.c]")
 
 	for (int i = 0; i < 256; i++)
 	{
-		char arg_r[7] = "-r=";
-		char arg_c[9] = "-c=";
+		char arg_r[11];
+		char arg_c[16];
+
+		strcpy(arg_r, i & 8 ? "-r=" : "--rows=");
+		strcpy(arg_c, i & 1 ? "-c=" : "--columns=");
+
 		argv[1] = arg_r;
 		argv[2] = arg_c;
 
@@ -40,4 +44,20 @@ TEST_CASE("parse command line args", "[src/globals.c]")
 		REQUIRE(!!SHOW_DAYS == !!(i & 2));
 		REQUIRE(!!SHOW_TOTAL_COUNT == !!(i & 1));
 	}
+
+	argv[1] = (char*)"-d=0";
+	parseCommandLineArguments(2, argv);
+	REQUIRE(MAX_N_DAYS == 0);
+
+	argv[1] = (char*)"--days=-1";
+	parseCommandLineArguments(2, argv);
+	REQUIRE(MAX_N_DAYS == 1);
+
+	argv[1] = (char*)"--days=-420";
+	parseCommandLineArguments(2, argv);
+	REQUIRE(MAX_N_DAYS == 420);
+
+	argv[1] = (char*)"--days=1337";
+	parseCommandLineArguments(2, argv);
+	REQUIRE(MAX_N_DAYS == 1337);
 }
