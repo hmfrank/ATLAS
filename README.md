@@ -1,6 +1,60 @@
 # Advanced Tool for Log Analysis and Statistics - A.T.L.A.S.
-This is a tool for analyzing apache log files and generating statistics. This project is still in early development, so
-the program can't do very much, for now.
+This is a tool for analyzing apache log files and generating statistics.
+
+For each day in the log file, as well as for the entire log file, ATLAS counts the number of requests, the number of
+unique uses, the number of received bytes and the number of sent bytes.
+
+The log is read from `stdin`.
+If you have actual log file, you can pipe it into `stdin` like this: `$ ./atlas [flags] < access.log`.
+
+The result is printed to `stdout` in a whitespace-separated table.
+
+## Command Line Options
+### `--rows=`
+Same as `-r=`
+
+Specifies which rows are displayed.
+If this option is omitted all rows are displayed.
+You can specify any combination of the following flags.
+
+**h** Display the table header.  
+**d** Display daily summaries.  
+**t** Display total summary.
+
+**Example:** `--rows=ht` Shows the table header and total summary.
+
+### `--columns=`
+Same as `-c=`
+
+Specifies which columns are displayed.
+If this option is omitted all rows are displayed.
+You can specify any combination of the following flags.
+
+**d** Display date-column.  
+**r** Display number-of-requests-column.  
+**u** Display number-of-unique-users-column.  
+**i** Display number-of-bytes-received-column.  
+**o** Display number-of-bytes-sent-column.
+
+### `--method=`
+Same as `-m=`
+
+Specifies which data structure is used to count the number of unique users.
+You can specify _one_ of the following values.
+
+**a** AVL-tree (Counted value is exact. Insertion: O(log(n)), Space: O(n))  
+**h** HyperLogLog (Counted value might be a little off. Inserion: O(1), Space: O(log(log(n))), is very good for huge
+      log files)
+
+If this option is omitted, AVL-trees are used.
+  
+### `--days=`
+Same as `-d=`
+
+Specifies the maximum number of days in the log file.
+The default value is 42 (6 weeks).
+If your log file actually contains more days, the excess can not be analysed by ATLAS.
+      
 
 ## Makefile Targets
 ### `make all`
