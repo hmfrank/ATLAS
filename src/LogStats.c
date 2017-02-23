@@ -12,6 +12,23 @@
 #include "../inc/LogStats.h"
 
 /**
+ * Converts `date` into a human readable string.
+ *
+ * @param date The date to be converted.
+ * @param buffer The buffer to write the converted string to.
+ */
+static void dateToString(const char date[9], char buffer[11])
+{
+	buffer[4] = '-';
+	buffer[7] = '-';
+	buffer[10] = '\0';
+
+	memcpy(buffer, date, 4);
+	memcpy(buffer + 5, date + 4, 2);
+	memcpy(buffer + 8, date + 6, 2);
+}
+
+/**
  * Prints the table header to `stream`.
  *
  * @param stream not `NULL`
@@ -34,11 +51,14 @@ static void printHeader(FILE *stream)
  * @param counter not `NULL`
  * @param stream not `NULL`
  */
-static void printRow(const char *date, struct Counter *counter, FILE *stream)
+static void printRow(const char date[9], struct Counter *counter, FILE *stream)
 {
-	if (SHOW_DATE)      fprintf(stream, "%10s ", date);
+	char date_string[11];
+	dateToString(date, date_string);
+
+	if (SHOW_DATE)      fprintf(stream, "%10s ", date_string);
 	if (SHOW_REQUESTS)  fprintf(stream, "%10u ", counter->n_requests);
-	if (SHOW_USERS)     fprintf(stream, "%10u ", ctrCountUsers(counter));
+	if (SHOW_USERS)     fprintf(stream, "%10zu ", ctrCountUsers(counter));
 	if (SHOW_IN_BYTES)  fprintf(stream, "%10llu ", counter->n_bytes_in);
 	if (SHOW_OUT_BYTES) fprintf(stream, "%10llu ", counter->n_bytes_out);
 

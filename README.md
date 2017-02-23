@@ -90,4 +90,4 @@ requests and the number of bytes sent and received for each day.
 If you're using the Apache web server, this format will work: `%%h %%u %%t %%m %%s %%I %%O "%U" "%{Referer}i"`. If you
 want a more detailed specification, you have to take a look at the source code of `parseLogEntry()`.
 
-_Version_ 1.0.0
+_Version_ 1.0.1
